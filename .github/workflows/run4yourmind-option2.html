@@ -1,0 +1,3653 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Run 4 Your Mind | Detroit Food, Wellness, and School Resources</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <style>
+    :root {
+      --pink: #f6a9ba;
+      --pink-soft: #ffe9ee;
+      --coral: #e9575f;
+      --navy: #25243d;
+      --teal: #087ba8;
+      --teal-dark: #075f81;
+      --gold: #f0b84b;
+      --mint: #dff3ed;
+      --paper: #fffaf7;
+      --white: #ffffff;
+      --ink: #242138;
+      --muted: #6c6678;
+      --line: #eadde2;
+      --shadow: 0 18px 42px rgba(37, 36, 61, 0.12);
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      line-height: 1.5;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    .site-shell {
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .topbar {
+      background: var(--navy);
+      color: var(--white);
+      font-size: 0.84rem;
+      padding: 0.42rem 1rem;
+      text-align: center;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255, 250, 247, 0.94);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(16px);
+    }
+
+    .nav-inner,
+    .section-inner {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .nav-inner {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      min-width: 230px;
+    }
+
+    .brain-mark {
+      width: 52px;
+      height: 52px;
+      flex: 0 0 52px;
+    }
+
+    .brand-word {
+      font-weight: 900;
+      letter-spacing: 0;
+      color: var(--navy);
+      line-height: 1;
+      text-transform: uppercase;
+      font-size: 1.28rem;
+    }
+
+    footer .brand-word { color: var(--white); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      padding: 0.55rem 0.7rem;
+      border-radius: 999px;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus {
+      background: var(--pink-soft);
+      color: var(--navy);
+      outline: none;
+    }
+
+    .nav-cta,
+    .primary-btn,
+    .secondary-btn,
+    .tiny-btn,
+    .filter-chip,
+    .tab-btn {
+      border: 0;
+      cursor: pointer;
+      font-weight: 800;
+      transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+
+    .nav-cta,
+    .nav-action,
+    .primary-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      padding: 0.78rem 1rem;
+      border-radius: 999px;
+      color: var(--white);
+      background: var(--coral);
+      box-shadow: 0 10px 24px rgba(233, 87, 95, 0.22);
+      white-space: nowrap;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav-action {
+      padding: 0.72rem 0.9rem;
+      font-size: 0.9rem;
+    }
+
+    .nav-cta:hover,
+    .nav-action:hover,
+    .primary-btn:hover,
+    .secondary-btn:hover,
+    .tiny-btn:hover,
+    .filter-chip:hover,
+    .tab-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .hero {
+      background:
+        linear-gradient(135deg, rgba(255, 233, 238, 0.92), rgba(223, 243, 237, 0.86)),
+        radial-gradient(circle at 18% 20%, rgba(246, 169, 186, 0.42), transparent 34%),
+        var(--paper);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .hero-grid {
+      min-height: 650px;
+      display: grid;
+      grid-template-columns: minmax(0, 0.92fr) minmax(360px, 1.08fr);
+      gap: 2rem;
+      align-items: center;
+      padding: 58px 0 42px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      margin: 0 0 1rem;
+      color: var(--teal-dark);
+      font-weight: 900;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 22px;
+      height: 3px;
+      background: var(--coral);
+      border-radius: 999px;
+    }
+
+    h1,
+    h2,
+    h3,
+    p { margin-top: 0; }
+
+    h1 {
+      margin-bottom: 1rem;
+      color: var(--navy);
+      font-size: clamp(2.45rem, 5vw, 5rem);
+      line-height: 0.98;
+      letter-spacing: 0;
+      max-width: 760px;
+    }
+
+    .hero-copy {
+      color: var(--muted);
+      font-size: 1.14rem;
+      max-width: 660px;
+      margin-bottom: 1.45rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .secondary-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      padding: 0.78rem 1rem;
+      border-radius: 999px;
+      color: var(--navy);
+      background: var(--white);
+      border: 1px solid var(--line);
+    }
+
+    .impact-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      max-width: 620px;
+    }
+
+    .impact-stat {
+      padding: 0.9rem;
+      background: rgba(255, 255, 255, 0.74);
+      border: 1px solid rgba(234, 221, 226, 0.9);
+      border-radius: var(--radius);
+    }
+
+    .impact-stat strong {
+      display: block;
+      color: var(--navy);
+      font-size: 1.45rem;
+      line-height: 1.1;
+    }
+
+    .impact-stat span {
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+
+    .finder-panel {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .finder-top {
+      padding: 1.1rem;
+      background: var(--navy);
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .finder-top h2 {
+      margin: 0;
+      font-size: 1.08rem;
+    }
+
+    .live-badge {
+      padding: 0.35rem 0.55rem;
+      background: rgba(255, 255, 255, 0.13);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+
+    .finder-controls {
+      padding: 1rem;
+      display: grid;
+      gap: 0.8rem;
+    }
+
+    .search-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.7rem;
+    }
+
+    .field {
+      width: 100%;
+      padding: 0.82rem 0.9rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      color: var(--ink);
+      background: var(--paper);
+    }
+
+    .field:focus {
+      border-color: var(--teal);
+      outline: 3px solid rgba(8, 123, 168, 0.13);
+    }
+
+    .chip-row,
+    .tab-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .filter-chip,
+    .tab-btn {
+      padding: 0.52rem 0.76rem;
+      border-radius: 999px;
+      color: var(--navy);
+      background: var(--pink-soft);
+      border: 1px solid transparent;
+      font-size: 0.86rem;
+    }
+
+    .filter-chip.active,
+    .tab-btn.active {
+      color: var(--white);
+      background: var(--teal);
+      box-shadow: 0 10px 20px rgba(8, 123, 168, 0.18);
+    }
+
+    .map-wrap {
+      height: 360px;
+      min-height: 320px;
+      background: #eef4f0;
+      position: relative;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .leaflet-container {
+      width: 100%;
+      height: 100%;
+      font-family: inherit;
+      z-index: 1;
+    }
+
+    .leaflet-popup-content {
+      min-width: 230px;
+      margin: 0.85rem;
+      color: var(--ink);
+    }
+
+    .leaflet-popup-content h3 {
+      margin: 0 0 0.25rem;
+      color: var(--navy);
+      font-size: 1rem;
+    }
+
+    .map-marker {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border: 3px solid var(--white);
+      border-radius: 50%;
+      color: var(--white);
+      font-size: 0.84rem;
+      font-weight: 900;
+      box-shadow: 0 9px 20px rgba(37, 36, 61, 0.22);
+    }
+
+    .map-marker.food { background: var(--coral); }
+    .map-marker.youth { background: var(--gold); color: var(--navy); }
+    .map-marker.senior { background: var(--teal); }
+    .map-marker.wellness { background: var(--navy); }
+
+    .finder-status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.7rem;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .finder-status button {
+      padding: 0.3rem 0.52rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--white);
+      color: var(--teal-dark);
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .results-list {
+      padding: 1rem;
+      display: grid;
+      gap: 0.8rem;
+      max-height: 420px;
+      overflow: auto;
+    }
+
+    .result-card,
+    .resource-card,
+    .story-card,
+    .workshop-card,
+    .goal-card,
+    .video-card {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+
+    .result-card {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+      padding: 0.9rem;
+    }
+
+    .result-card h3 {
+      margin-bottom: 0.2rem;
+      color: var(--navy);
+      font-size: 1rem;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 0.88rem;
+      margin: 0;
+    }
+
+    .result-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.55rem;
+    }
+
+    .result-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.22rem 0.48rem;
+      border-radius: 999px;
+      background: var(--mint);
+      color: var(--teal-dark);
+      font-size: 0.72rem;
+      font-weight: 900;
+    }
+
+    .tiny-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 78px;
+      align-self: start;
+      padding: 0.54rem 0.68rem;
+      border-radius: 999px;
+      color: var(--white);
+      background: var(--navy);
+    }
+
+    section {
+      padding: 74px 0;
+    }
+
+    .section-heading {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: end;
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-heading h2 {
+      margin-bottom: 0.35rem;
+      color: var(--navy);
+      font-size: clamp(1.8rem, 3.4vw, 3.2rem);
+      line-height: 1.05;
+      max-width: 780px;
+    }
+
+    .section-heading p {
+      max-width: 680px;
+      color: var(--muted);
+      margin-bottom: 0;
+    }
+
+    .resource-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 1.1rem;
+      align-items: start;
+    }
+
+    .side-panel {
+      position: sticky;
+      top: 96px;
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--white);
+      box-shadow: 0 12px 28px rgba(37, 36, 61, 0.08);
+    }
+
+    .side-panel h3 {
+      margin-bottom: 0.7rem;
+      color: var(--navy);
+    }
+
+    .select-row {
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .resource-card {
+      padding: 1rem;
+      display: grid;
+      gap: 0.7rem;
+      min-height: 225px;
+    }
+
+    .icon-box {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: var(--radius);
+      background: var(--pink-soft);
+      color: var(--coral);
+      font-size: 1.35rem;
+    }
+
+    .resource-card h3,
+    .story-card h3,
+    .workshop-card h3 {
+      margin-bottom: 0.2rem;
+      color: var(--navy);
+      font-size: 1.05rem;
+    }
+
+    .resource-card p,
+    .story-card p,
+    .workshop-card p {
+      color: var(--muted);
+      margin-bottom: 0;
+      font-size: 0.94rem;
+    }
+
+    .resource-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: auto;
+      flex-wrap: wrap;
+    }
+
+    .link-btn {
+      color: var(--teal-dark);
+      font-weight: 900;
+      font-size: 0.9rem;
+    }
+
+    .wellness-band {
+      background: var(--navy);
+      color: var(--white);
+      border-block: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .wellness-band .section-heading h2,
+    .wellness-band .section-heading p {
+      color: var(--white);
+    }
+
+    .wellness-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 1rem;
+      align-items: stretch;
+    }
+
+    .goal-card {
+      padding: 1.2rem;
+      color: var(--ink);
+      display: grid;
+      gap: 1rem;
+    }
+
+    .goal-meter {
+      height: 14px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: var(--pink-soft);
+    }
+
+    .goal-meter span {
+      display: block;
+      width: 57%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--coral), var(--gold));
+      border-radius: inherit;
+    }
+
+    .habit-checks {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.45rem;
+    }
+
+    .habit-checks label {
+      display: grid;
+      place-items: center;
+      min-height: 48px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      color: var(--muted);
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .habit-checks input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .habit-checks input:checked + span {
+      color: var(--white);
+      background: var(--teal);
+      border-color: var(--teal);
+    }
+
+    .habit-checks span {
+      width: 100%;
+      min-height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: var(--radius);
+      transition: background 160ms ease, color 160ms ease;
+    }
+
+    .video-area {
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius);
+      padding: 1rem;
+      display: grid;
+      gap: 0.9rem;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+
+    .video-card {
+      overflow: hidden;
+      color: var(--ink);
+    }
+
+    .video-thumb {
+      min-height: 132px;
+      background:
+        linear-gradient(135deg, rgba(246, 169, 186, 0.95), rgba(8, 123, 168, 0.88)),
+        var(--pink);
+      display: grid;
+      place-items: center;
+      color: var(--white);
+      font-size: 2.2rem;
+      font-weight: 900;
+    }
+
+    .video-card div:last-child {
+      padding: 0.75rem;
+    }
+
+    .video-card h3 {
+      margin-bottom: 0.25rem;
+      font-size: 0.96rem;
+      color: var(--navy);
+    }
+
+    .video-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .story-grid,
+    .workshop-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .story-card {
+      overflow: hidden;
+    }
+
+    .portrait {
+      min-height: 210px;
+      background:
+        linear-gradient(135deg, rgba(37, 36, 61, 0.18), rgba(246, 169, 186, 0.2)),
+        var(--mint);
+      position: relative;
+    }
+
+    .portrait::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 38px;
+      width: 76px;
+      height: 76px;
+      transform: translateX(-50%);
+      border-radius: 50%;
+      background: var(--pink);
+      box-shadow: 0 90px 0 34px var(--teal);
+    }
+
+    .portrait::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 22px;
+      width: 130px;
+      height: 42px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: var(--navy);
+    }
+
+    .story-card-content,
+    .workshop-card {
+      padding: 1rem;
+    }
+
+    .quote-mark {
+      color: var(--coral);
+      font-size: 2rem;
+      line-height: 0.8;
+      font-weight: 900;
+    }
+
+    .workshop-card {
+      display: grid;
+      gap: 0.8rem;
+      min-height: 280px;
+    }
+
+    .workshop-card.featured {
+      background: var(--pink-soft);
+      border-color: rgba(233, 87, 95, 0.2);
+    }
+
+    .lesson-list {
+      padding-left: 1.1rem;
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .lesson-list li + li { margin-top: 0.25rem; }
+
+    .contact-section {
+      background: linear-gradient(135deg, var(--pink-soft), var(--mint));
+      border-top: 1px solid var(--line);
+    }
+
+    .about-section {
+      background: var(--white);
+      border-top: 1px solid var(--line);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.12fr) minmax(300px, 0.88fr);
+      gap: 1.25rem;
+      align-items: start;
+    }
+
+    .about-card,
+    .press-card {
+      padding: 1.1rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+    }
+
+    .about-card h3,
+    .press-card h3 {
+      color: var(--navy);
+      margin-bottom: 0.45rem;
+    }
+
+    .bio-list {
+      display: grid;
+      gap: 0.65rem;
+      margin-top: 1rem;
+    }
+
+    .bio-list div {
+      padding: 0.75rem;
+      border-radius: var(--radius);
+      background: var(--white);
+      border: 1px solid var(--line);
+    }
+
+    .press-list {
+      display: grid;
+      gap: 0.8rem;
+      min-width: 0;
+    }
+
+    .press-card {
+      display: grid;
+      gap: 0.35rem;
+    }
+
+    .press-card p {
+      margin-bottom: 0;
+      color: var(--muted);
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 1.25rem;
+      align-items: start;
+    }
+
+    .contact-card,
+    .contact-form {
+      padding: 1.2rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--white);
+      box-shadow: 0 14px 32px rgba(37, 36, 61, 0.1);
+    }
+
+    .contact-list {
+      display: grid;
+      gap: 0.7rem;
+      margin-top: 1rem;
+    }
+
+    .contact-item {
+      display: flex;
+      gap: 0.7rem;
+      align-items: flex-start;
+      color: var(--muted);
+    }
+
+    .contact-item strong {
+      display: block;
+      color: var(--navy);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.8rem;
+    }
+
+    .full { grid-column: 1 / -1; }
+
+    textarea.field {
+      min-height: 126px;
+      resize: vertical;
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 80;
+      max-width: 360px;
+      padding: 0.9rem 1rem;
+      border-radius: var(--radius);
+      background: var(--navy);
+      color: var(--white);
+      box-shadow: var(--shadow);
+      transform: translateY(24px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .confetti-piece {
+      position: fixed;
+      top: -14px;
+      z-index: 120;
+      width: 9px;
+      height: 14px;
+      border-radius: 2px;
+      pointer-events: none;
+      animation: confetti-fall 1.9s ease-out forwards;
+    }
+
+    @keyframes confetti-fall {
+      0% { transform: translate3d(0, -20px, 0) rotate(0deg); opacity: 1; }
+      100% { transform: translate3d(var(--drift), 105vh, 0) rotate(720deg); opacity: 0; }
+    }
+
+    footer {
+      background: var(--navy);
+      color: var(--white);
+      padding: 34px 0;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      color: rgba(255, 255, 255, 0.78);
+      font-weight: 800;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 980px) {
+      .nav-inner {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 0.75rem 0;
+      }
+
+      .nav-links { justify-content: flex-start; }
+      .nav-cta { width: 100%; }
+      .nav-actions {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .hero-grid,
+      .resource-layout,
+      .wellness-grid,
+      .about-grid,
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .side-panel {
+        position: static;
+      }
+
+      .resource-grid,
+      .video-grid,
+      .story-grid,
+      .workshop-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .nav-inner,
+      .section-inner {
+        width: min(100% - 22px, 1180px);
+      }
+
+      .brand { min-width: 0; }
+
+      .brand-word { font-size: 1.04rem; }
+
+      .nav-inner {
+        gap: 0.5rem;
+      }
+
+      .nav-links {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+
+      .nav-links::-webkit-scrollbar {
+        display: none;
+      }
+
+      .nav-links a {
+        white-space: nowrap;
+        padding: 0.42rem 0.58rem;
+      }
+
+      .nav-cta {
+        width: auto;
+        align-self: flex-start;
+        padding: 0.62rem 0.9rem;
+      }
+
+      .nav-action {
+        padding: 0.62rem 0.8rem;
+      }
+
+      .hero-grid {
+        min-height: unset;
+        padding-top: 36px;
+      }
+
+      .search-row,
+      .result-card,
+      .section-heading,
+      .impact-row,
+      .resource-grid,
+      .video-grid,
+      .story-grid,
+      .workshop-grid,
+      .form-grid,
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      section { padding: 54px 0; }
+      .map-wrap { min-height: 225px; }
+      .habit-checks { grid-template-columns: repeat(4, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="site-shell">
+    <div class="topbar">Detroit families, schools, and neighbors: find food support, wellness tools, and local places to move.</div>
+
+    <header class="nav" aria-label="Site navigation">
+      <div class="nav-inner">
+        <a class="brand" href="#home" aria-label="Run 4 Your Mind home">
+          <svg class="brain-mark" viewBox="0 0 120 120" role="img" aria-label="Running brain logo inspired mark">
+            <circle cx="61" cy="52" r="41" fill="#ffe1e8" stroke="#25243d" stroke-width="3" />
+            <path d="M38 58c-10-4-10-20 2-22 2-12 18-13 23-5 9-7 23 0 22 12 11 4 10 20-1 23 2 12-13 22-23 14-8 9-25 3-24-10-9-1-13-8-9-12" fill="none" stroke="#e8a5b1" stroke-width="6" stroke-linecap="round" />
+            <path d="M60 24v60M60 45c-12 0-17 8-16 18M62 40c12 0 18 8 18 18M51 77c6 7 17 6 23-2" fill="none" stroke="#25243d" stroke-width="3" stroke-linecap="round" />
+            <path d="M24 62c-11 0-19 8-21 20" fill="none" stroke="#e9575f" stroke-width="9" stroke-linecap="round" />
+            <circle cx="2" cy="86" r="8" fill="#25243d" />
+            <path d="M91 64c13 3 24 12 28 25" fill="none" stroke="#e9575f" stroke-width="9" stroke-linecap="round" />
+            <circle cx="120" cy="92" r="8" fill="#25243d" />
+            <path d="M43 88l-17 23M77 88l18 23" fill="none" stroke="#25243d" stroke-width="10" stroke-linecap="round" />
+            <path d="M18 113h24M86 113h24" stroke="#087ba8" stroke-width="10" stroke-linecap="round" />
+          </svg>
+          <span class="brand-word">Run 4 Your Mind</span>
+        </a>
+
+        <nav class="nav-links" aria-label="Primary links">
+          <a href="#finder">Finder</a>
+          <a href="#resources">Resources</a>
+          <a href="#videos">Videos</a>
+          <a href="#stories">Stories</a>
+          <a href="#workshops">Schools</a>
+          <a href="#about">About</a>
+        </nav>
+
+        <div class="nav-actions" aria-label="Support actions">
+          <a class="nav-action" href="#donate">Donate</a>
+          <a class="nav-action" href="#volunteer">Volunteer With Us</a>
+          <a class="nav-cta" href="#contact">Contact Us</a>
+        </div>
+      </div>
+    </header>
+
+    <main id="home">
+      <section class="hero" aria-label="Run 4 Your Mind resource hub">
+        <div class="section-inner hero-grid">
+          <div>
+            <p class="eyebrow">Detroit wellness resource hub</p>
+            <h1>Food support, movement, and mental wellness in one place.</h1>
+            <p class="hero-copy">Run 4 Your Mind connects families, students, and community partners with local food assistance, neighborhood recreation, school-ready workshops, and healthy habits that make care easier to find.</p>
+            <div class="hero-actions">
+              <a class="primary-btn" href="#finder">Find Food Near You</a>
+              <a class="secondary-btn" href="#workshops">Bring Us to Your School</a>
+            </div>
+            <div class="impact-row" aria-label="Impact highlights">
+              <div class="impact-stat"><strong>42</strong><span>Detroit resource partners</span></div>
+              <div class="impact-stat"><strong>8</strong><span>student workshop modules</span></div>
+              <div class="impact-stat"><strong>7-day</strong><span>healthy habit tracker</span></div>
+            </div>
+          </div>
+
+          <div class="finder-panel" id="finder">
+            <div class="finder-top">
+              <h2>Local Food + Wellness Finder</h2>
+              <span class="live-badge" id="sourceBadge">Source-backed data</span>
+            </div>
+            <div class="finder-controls">
+              <div class="search-row">
+                <input id="resourceSearch" class="field" type="search" placeholder="Search an address, ZIP, neighborhood, resource, or day" aria-label="Search resources" />
+                <button class="primary-btn" id="useDetroitBtn" type="button">Search Near</button>
+              </div>
+              <div class="chip-row" aria-label="Resource filters">
+                <button class="filter-chip active" type="button" data-filter="all">All</button>
+                <button class="filter-chip" type="button" data-filter="pantry">Food pantries</button>
+                <button class="filter-chip" type="button" data-filter="drive">Food drives</button>
+                <button class="filter-chip" type="button" data-filter="youth">Youth meals</button>
+                <button class="filter-chip" type="button" data-filter="senior">Senior meals</button>
+                <button class="filter-chip" type="button" data-filter="wellness">Wellness</button>
+              </div>
+              <div class="finder-status">
+                <span id="updateStatus">Uses local source-backed data first, then checks for a daily hosted update.</span>
+                <button id="refreshResources" type="button">Refresh</button>
+              </div>
+            </div>
+            <div class="map-wrap" id="resourceMap" aria-label="Detroit food and wellness map"></div>
+            <div class="results-list" id="resultsList" aria-live="polite"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="resources">
+        <div class="section-inner">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Resource cards</p>
+              <h2>Quick paths to food, recreation, and support.</h2>
+              <p>Browse by need, age group, and neighborhood type. These cards can link to live partner pages when your final directory is ready.</p>
+            </div>
+            <a class="secondary-btn" href="#contact">Suggest a Resource</a>
+          </div>
+
+          <div class="resource-layout">
+            <aside class="side-panel" aria-label="Resource filters">
+              <h3>Personalize results</h3>
+              <div class="select-row">
+                <select class="field" id="needSelect" aria-label="Need type">
+                  <option value="all">All needs</option>
+                  <option value="food">Food assistance</option>
+                  <option value="movement">Movement and trails</option>
+                  <option value="school">School and youth</option>
+                </select>
+                <select class="field" id="areaSelect" aria-label="Area">
+                  <option value="all">All Detroit areas</option>
+                  <option value="east">East Side</option>
+                  <option value="west">West Side</option>
+                  <option value="central">Central / Midtown</option>
+                  <option value="southwest">Southwest</option>
+                </select>
+                <button class="primary-btn" type="button" id="matchBtn">Match Me</button>
+              </div>
+            </aside>
+
+            <div class="resource-grid" id="resourceGrid">
+              <article class="resource-card" data-need="food" data-area="east">
+                <div class="icon-box">+</div>
+                <div><h3>Emergency Food Box</h3><p>Same-week groceries for families who need immediate help after school, work, or transit.</p></div>
+                <div class="resource-actions"><span class="tag">Food</span><a class="link-btn" href="#contact">Request info</a></div>
+              </article>
+              <article class="resource-card" data-need="food" data-area="west">
+                <div class="icon-box">+</div>
+                <div><h3>Mobile Pantry Stops</h3><p>Pop-up food distribution schedule organized by neighborhood and day of week.</p></div>
+                <div class="resource-actions"><span class="tag">Pantry</span><a class="link-btn" href="#finder">View stops</a></div>
+              </article>
+              <article class="resource-card" data-need="movement" data-area="central">
+                <div class="icon-box">↗</div>
+                <div><h3>Detroit Riverwalk Routes</h3><p>Beginner-friendly walking and running route ideas with public transit access notes.</p></div>
+                <div class="resource-actions"><span class="tag">Trail</span><a class="link-btn" href="#contact">Get route</a></div>
+              </article>
+              <article class="resource-card" data-need="movement" data-area="west">
+                <div class="icon-box">✓</div>
+                <div><h3>Free Fitness Calendar</h3><p>Community classes, youth movement sessions, and low-cost recreation center activities.</p></div>
+                <div class="resource-actions"><span class="tag">Fitness</span><a class="link-btn" href="#contact">Join list</a></div>
+              </article>
+              <article class="resource-card" data-need="school" data-area="all">
+                <div class="icon-box">▣</div>
+                <div><h3>School Wellness Kit</h3><p>Printable prompts, classroom goal sheets, and family resource handouts.</p></div>
+                <div class="resource-actions"><span class="tag">School</span><a class="link-btn" href="#workshops">See modules</a></div>
+              </article>
+              <article class="resource-card" data-need="food" data-area="southwest">
+                <div class="icon-box">+</div>
+                <div><h3>Weekend Meal Support</h3><p>Food assistance options for families who need extra coverage outside school hours.</p></div>
+                <div class="resource-actions"><span class="tag">Family</span><a class="link-btn" href="#contact">Ask for help</a></div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="wellness-band" id="videos">
+        <div class="section-inner">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Weekly goals + videos</p>
+              <h2>Build one healthy habit and learn what support exists by state.</h2>
+              <p>Use the weekly goal tracker for simple momentum, then browse your YouTube resource library by state topic.</p>
+            </div>
+          </div>
+
+          <div class="wellness-grid">
+            <article class="goal-card" aria-label="Healthy habits weekly goal">
+              <div>
+                <span class="tag">This week's goal</span>
+                <h3>Move for 20 minutes after school or dinner.</h3>
+                <p class="meta">Check off each day you complete the habit. Progress saves while this page is open.</p>
+              </div>
+              <div class="goal-meter" aria-label="Goal progress"><span id="goalMeter"></span></div>
+              <strong id="goalText">4 of 7 days complete</strong>
+              <div class="habit-checks" id="habitChecks">
+                <label><input type="checkbox" checked><span>M</span></label>
+                <label><input type="checkbox" checked><span>T</span></label>
+                <label><input type="checkbox"><span>W</span></label>
+                <label><input type="checkbox" checked><span>T</span></label>
+                <label><input type="checkbox"><span>F</span></label>
+                <label><input type="checkbox" checked><span>S</span></label>
+                <label><input type="checkbox"><span>S</span></label>
+              </div>
+              <button class="secondary-btn" type="button" id="resetGoal">Reset Week</button>
+            </article>
+
+            <div class="video-area">
+              <div class="tab-row" aria-label="Video state topics">
+                <button class="tab-btn active" type="button" data-state="Michigan">Michigan</button>
+                <button class="tab-btn" type="button" data-state="National">National</button>
+              </div>
+              <div class="video-grid" id="videoGrid"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="stories">
+        <div class="section-inner">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Community stories</p>
+              <h2>Role models showing what care looks like in Detroit.</h2>
+              <p>Spotlight students, educators, coaches, organizers, parents, and neighbors who make healthy choices feel possible.</p>
+            </div>
+            <a class="secondary-btn" href="#contact">Nominate Someone</a>
+          </div>
+
+          <div class="story-grid">
+            <article class="story-card">
+              <div class="portrait"></div>
+              <div class="story-card-content">
+                <div class="quote-mark">“</div>
+                <h3>Maya, youth run captain</h3>
+                <p>Started a lunch-hour walking group that helped classmates reset before afternoon classes.</p>
+              </div>
+            </article>
+            <article class="story-card">
+              <div class="portrait"></div>
+              <div class="story-card-content">
+                <div class="quote-mark">“</div>
+                <h3>Coach Andre, mentor</h3>
+                <p>Connects families with pantry hours before practice so students can focus and participate.</p>
+              </div>
+            </article>
+            <article class="story-card">
+              <div class="portrait"></div>
+              <div class="story-card-content">
+                <div class="quote-mark">“</div>
+                <h3>Ms. Rivera, school counselor</h3>
+                <p>Uses weekly goal cards to help students name stress, movement, rest, and support.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="workshops">
+        <div class="section-inner">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">School workshops</p>
+              <h2>Ready-to-implement lessons for food access, movement, and mental wellness.</h2>
+              <p>Each workshop can be delivered by Run 4 Your Mind or adapted by school staff with a simple kit.</p>
+            </div>
+            <a class="primary-btn" href="#contact">Plan a Workshop</a>
+          </div>
+
+          <div class="workshop-grid">
+            <article class="workshop-card featured">
+              <span class="tag">Grades 5-8</span>
+              <h3>Fuel, Mood, and Movement</h3>
+              <p>Students connect meals, hydration, movement, and stress in a practical classroom session.</p>
+              <ul class="lesson-list">
+                <li>45-minute lesson plan</li>
+                <li>Family resource handout</li>
+                <li>One-week goal tracker</li>
+              </ul>
+              <a class="link-btn" href="#contact">Request this module</a>
+            </article>
+            <article class="workshop-card">
+              <span class="tag">High school</span>
+              <h3>Finding Help Without Shame</h3>
+              <p>Students learn how to search for food assistance, ask for support, and share resources with peers.</p>
+              <ul class="lesson-list">
+                <li>Resource finder activity</li>
+                <li>Role-play discussion cards</li>
+                <li>Local partner list</li>
+              </ul>
+              <a class="link-btn" href="#contact">Ask about availability</a>
+            </article>
+            <article class="workshop-card">
+              <span class="tag">Staff + families</span>
+              <h3>Community Wellness Night</h3>
+              <p>A school event format with pantry partners, movement demos, and healthy habit stations.</p>
+              <ul class="lesson-list">
+                <li>Event station guide</li>
+                <li>Partner outreach template</li>
+                <li>Follow-up email copy</li>
+              </ul>
+              <a class="link-btn" href="#contact">Build an event</a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="about-section" id="about">
+        <div class="section-inner">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">About Run 4 Your Mind</p>
+              <h2>Founded in 2022 to make brain health practical, active, and community-centered.</h2>
+              <p>Run 4 Your Mind grew from Alam’s personal experience with running, research, and community outreach.</p>
+            </div>
+          </div>
+
+          <div class="about-grid">
+            <article class="about-card">
+              <h3>Alam’s Story</h3>
+              <p>Alam founded Run 4 Your Mind in 2022 after seeing how movement, education, and early health awareness could change the way young people think about brain health. His experience running cross country helped him build discipline, confidence, and a healthier relationship with his own wellbeing.</p>
+              <p>Through research exposure in a Wayne State pharmacology lab and continued advocacy around brain health, Alam saw a way to connect science with everyday habits. Run 4 Your Mind brings that message to students and families: small, consistent steps like running, walking, eating well, and asking for support can protect the mind and strengthen the whole person.</p>
+              <p>Now, the goal is to bring that impact to Detroit by connecting schools, families, and neighborhoods with food resources, wellness education, movement opportunities, and role models who make health feel possible.</p>
+              <div class="bio-list">
+                <div><strong>Cross country experience</strong><br><span class="meta">Running became a foundation for improving physical health, focus, resilience, and mental wellbeing.</span></div>
+                <div><strong>Science-to-community mission</strong><br><span class="meta">Lab exposure helped shape a nonprofit focused on accessible brain health education.</span></div>
+                <div><strong>Detroit impact</strong><br><span class="meta">The organization aims to support students and families through movement, food access, and school workshops.</span></div>
+              </div>
+            </article>
+
+            <div class="press-list" aria-label="News articles about Run 4 Your Mind">
+              <article class="press-card">
+                <span class="tag">Wayne State University School of Medicine</span>
+                <h3>Experience in Pharmacology lab inspires high schooler to start nonprofit</h3>
+                <p>Coverage of Alam’s research experience and the inspiration behind launching Run 4 Your Mind.</p>
+                <a class="link-btn" href="https://today.wayne.edu/medicine/news/2023/12/08/experience-in-pharmacology-lab-inspires-high-schooler-to-start-nonprofit-61229" target="_blank" rel="noopener">Read the article</a>
+              </article>
+              <article class="press-card">
+                <span class="tag">Snabby</span>
+                <h3>Meet the Farmington Hills high schooler changing the game in brain health</h3>
+                <p>A feature on Alam’s brain health work and the mission behind Run 4 Your Mind.</p>
+                <a class="link-btn" href="https://www.snabby.com/virtual-tour/meet-the-farmington-hills-high-schooler-changing-the-game-in-brain-health/" target="_blank" rel="noopener">Read the feature</a>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact-section" id="contact">
+        <div class="section-inner contact-grid">
+          <div class="contact-card">
+            <p class="eyebrow">Contact</p>
+            <h2>Bring Run 4 Your Mind to your school, event, or neighborhood.</h2>
+            <p>Tell us what you need: a workshop, a resource partnership, a story nomination, or help updating the finder.</p>
+            <div class="contact-list">
+              <div class="contact-item"><strong>+</strong><span><strong>Food partners</strong> Share pantry hours, drive dates, and eligibility notes.</span></div>
+              <div class="contact-item"><strong>↗</strong><span><strong>Schools</strong> Request workshop materials or a live session.</span></div>
+              <div class="contact-item"><strong>✓</strong><span><strong>Community members</strong> Nominate a role model or running route.</span></div>
+            </div>
+          </div>
+
+          <form class="contact-form" id="contactForm" action="https://formsubmit.co/run4yourmindmi@gmail.com" method="POST">
+            <div class="form-grid">
+              <input type="hidden" name="_subject" value="Run 4 Your Mind website contact" />
+              <input type="hidden" name="_template" value="table" />
+              <input type="hidden" name="_captcha" value="false" />
+              <input class="field" name="name" placeholder="Your name" required />
+              <input class="field" name="email" type="email" placeholder="Email address" required />
+              <select class="field" name="topic">
+                <option>School workshop</option>
+                <option>Food pantry or drive update</option>
+                <option>Community story nomination</option>
+                <option>Partnership or sponsorship</option>
+              </select>
+              <input class="field" name="organization" placeholder="School or organization" />
+              <textarea class="field full" name="message" placeholder="Tell us what you are hoping to build together." required></textarea>
+              <button class="primary-btn full" type="submit">Send Message</button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="section-inner footer-grid">
+        <div class="brand">
+          <svg class="brain-mark" viewBox="0 0 120 120" aria-hidden="true">
+            <circle cx="61" cy="52" r="41" fill="#ffe1e8" stroke="#ffffff" stroke-width="3" />
+            <path d="M38 58c-10-4-10-20 2-22 2-12 18-13 23-5 9-7 23 0 22 12 11 4 10 20-1 23 2 12-13 22-23 14-8 9-25 3-24-10-9-1-13-8-9-12" fill="none" stroke="#f6a9ba" stroke-width="6" stroke-linecap="round" />
+            <path d="M24 62c-11 0-19 8-21 20" fill="none" stroke="#e9575f" stroke-width="9" stroke-linecap="round" />
+            <circle cx="2" cy="86" r="8" fill="#ffffff" />
+            <path d="M91 64c13 3 24 12 28 25" fill="none" stroke="#e9575f" stroke-width="9" stroke-linecap="round" />
+            <path d="M43 88l-17 23M77 88l18 23" fill="none" stroke="#ffffff" stroke-width="10" stroke-linecap="round" />
+            <path d="M18 113h24M86 113h24" stroke="#087ba8" stroke-width="10" stroke-linecap="round" />
+          </svg>
+          <span class="brand-word">Run 4 Your Mind</span>
+        </div>
+        <div class="footer-links">
+          <a href="#finder">Finder</a>
+          <a href="#resources">Resources</a>
+          <a href="#videos">Videos</a>
+          <a href="#stories">Stories</a>
+          <a href="#workshops">Schools</a>
+          <a href="#about">About</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script>
+    const RESOURCE_FEED_URL = window.RUN4YMIND_RESOURCE_FEED_URL || "";
+    const RESOURCE_LAST_REVIEWED = "May 21, 2026";
+    let resources = [
+      {
+        id: "fh-second-canaan",
+        name: "Second Canaan Outreach Ministry",
+        type: "pantry",
+        category: "Food pantry",
+        schedule: "Thursdays, 10:00 AM-1:00 PM",
+        address: "9435 Hayes St, Detroit, MI 48213",
+        neighborhood: "Outer Drive-Hayes",
+        phone: "(248) 967-1500",
+        source: "Forgotten Harvest / Lemontree Food Helpline",
+        sourceUrl: "https://www.forgottenharvest.org/find-food/",
+        updated: RESOURCE_LAST_REVIEWED,
+        lat: 42.4079,
+        lng: -82.9735,
+        tags: ["Free groceries", "Mobile pantry", "Thursday"]
+      },
+      {
+        id: "fh-jesus-tabernacle",
+        name: "Jesus Tabernacle of Deliverance",
+        type: "pantry",
+        category: "Food pantry",
+        schedule: "Wednesdays, 9:00 AM-12:00 PM",
+        address: "11001 Chalmers Rd, Detroit, MI 48213",
+        neighborhood: "Eden Gardens",
+        phone: "(313) 372-3110",
+        source: "Forgotten Harvest / Lemontree Food Helpline",
+        sourceUrl: "https://www.foodhelpline.org/regions/detroit",
+        updated: RESOURCE_LAST_REVIEWED,
+        lat: 42.4153,
+        lng: -82.9588,
+        tags: ["Free groceries", "ID may be required", "Wednesday"]
+      },
+      {
+        id: "fh-alternatives",
+        name: "Alternatives For Girls",
+        type: "pantry",
+        category: "Mobile food pantry",
+        schedule: "Thursday, May 21, 2026, 9:00 AM-11:00 AM",
+        address: "903 W Grand Blvd, Detroit, MI 48208",
+        neighborhood: "New Center / Grand Boulevard",
+        phone: "(313) 361-4000",
+        source: "Forgotten Harvest",
+        sourceUrl: "https://www.forgottenharvest.org/find-food/",
+        updated: RESOURCE_LAST_REVIEWED,
+        lat: 42.3667,
+        lng: -83.0912,
+        tags: ["Free groceries", "Mobile pantry", "Thursday"]
+      },
+      {
+        id: "fh-historic-little-rock",
+        name: "Historic Little Rock Missionary Baptist Church",
+        type: "drive",
+        category: "Mobile pantry",
+        schedule: "Friday, May 22, 2026, 9:00 AM-12:00 PM",
+        address: "9000 Woodward Ave, Detroit, MI 48202",
+        neighborhood: "North End",
+        phone: "(248) 967-1500",
+        source: "Forgotten Harvest",
+        sourceUrl: "https://www.forgottenharvest.org/find-food/",
+        updated: RESOURCE_LAST_REVIEWED,
+        lat: 42.3828,
+        lng: -83.0791,
+        tags: ["Free groceries", "Drive-through", "Friday"]
+      },
+      {
+        id: "fh-body-of-christ",
+        name: "Body Of Christ International",
+        type: "drive",
+        category: "Mobile pantry",
+        schedule: "Friday, May 22, 2026, 9:00 AM-12:00 PM",
+        address: "9555 St. Mary's St, Detroit, MI 48227",
+        neighborhood: "West Detroit",
+        phone: "(248) 967-1500",
+        source: "Forgotten Harvest",
+        sourceUrl: "https://www.forgottenharvest.org/find-food/",
+        updated: RESOURCE_LAST_REVIEWED,
+        lat: 42.3661,
+        lng: -83.2054,
+        tags: ["Free groceries", "Mobile pantry", "Friday"]
+      },
+      {
+        id: "fh-grace-nazarene",
+        name: "Grace Church of the Nazarene",
+        type: "drive",
+        category: "Mobile pantry",
+        schedule: "Friday, May 22, 2026, 9:00 AM-12:00 PM",
+        address: "18020 Hoover, Detroit, MI 48205",
+        neighborhood: "Northeast Detroit",
+        phone: "(248) 967-1500",
+        source: "Forgotten Harvest",
+        sourceUrl: "https://www.forgottenharvest.org/find-food/",
+        updated: RESOURCE_LAST_REVIEWED,
+        lat: 42.4265,
+        lng: -83.0046,
+        tags: ["Free groceries", "Mobile pantry", "Friday"]
+      },
+      {
+        id: "foodhelpline-queen-angels",
+        name: "Our Lady Queen of Angels / Gleaners Mobile Pantry",
+        type: "drive",
+        category: "Drive-up mobile distribution",
+        schedule: "Every 2 weeks on Monday, 9:00 AM-11:00 AM",
+        address: "4200 Martin St, Detroit, MI 48210",
+        neighborhood: "Southwest Detroit",
+        phone: "(866) 453-2637",
+        source: "PantryNet / Lemontree Food Helpline",
+        sourceUrl: "https://www.foodhelpline.org/regions/detroit",
+        updated: RESOURCE_LAST_REVIEWED,
+        lat: 42.3293,
+        lng: -83.1356,
+        tags: ["Drive-up", "No appointment", "Gleaners"]
+      },
+      {
+        id: "foodhelpline-cathedral",
+        name: "Cathedral Church of St. Paul",
+        type: "pantry",
+        category: "Soup kitchen",
+        schedule: "Sundays, 9:15 AM, until food runs out",
+        address: "4800 Woodward Ave, Detroit, MI 48201",
+        neighborhood: "Midtown",
+        phone: "(248) 495-8308",
+        source: "Lemontree Food Helpline",
+        sourceUrl: "https://www.foodhelpline.org/regions/detroit",
+        updated: RESOURCE_LAST_REVIEWED,
+        lat: 42.3558,
+        lng: -83.0669,
+        tags: ["Prepared meals", "Sunday", "First come"]
+      },
+      {
+        id: "foodhelpline-deo-gratias",
+        name: "Deo Gratias Ministries Detroit",
+        type: "pantry",
+        category: "Food pantry + soup kitchen",
+        schedule: "Soup kitchen Mon-Fri, 10:00 AM-2:00 PM; pantry Tue/Fri, 10:00 AM-1:30 PM",
+        address: "15879 Seven Mile East, Detroit, MI 48205",
+        neighborhood: "Regent Park",
+        phone: "(313) 743-0477",
+        source: "Lemontree Food Helpline",
+        sourceUrl: "https://www.foodhelpline.org/regions/detroit",
+        updated: RESOURCE_LAST_REVIEWED,
+        lat: 42.4342,
+        lng: -82.9576,
+        tags: ["Prepared meals", "Free groceries", "Appointment"]
+      },
+      {
+        id: "foodhelpline-bethany",
+        name: "Bethany Lutheran Church",
+        type: "pantry",
+        category: "Food pantry",
+        schedule: "2nd and 4th Wednesdays, 12:30 PM-2:30 PM",
+        address: "11475 Outer Drive East, Detroit, MI 48224",
+        neighborhood: "Morningside",
+        phone: "(313) 885-7721",
+        source: "Lemontree Food Helpline",
+        sourceUrl: "https://www.foodhelpline.org/regions/detroit",
+        updated: RESOURCE_LAST_REVIEWED,
+        lat: 42.4144,
+        lng: -82.9378,
+        tags: ["Free groceries", "Call ahead", "Delivery may be available"]
+      },
+      {
+        id: "cod-adams-butzel-youth",
+        name: "Adams Butzel Center",
+        type: "youth",
+        category: "Free supper for children 18 and under",
+        schedule: "Monday-Friday, 4:30 PM-6:30 PM",
+        address: "10500 Lyndon, Detroit, MI 48238",
+        neighborhood: "West Side",
+        phone: "(313) 224-1100",
+        source: "City of Detroit Parks & Recreation",
+        sourceUrl: "https://detroitmi.gov/departments/detroit-parks-recreation/recreation-centers/food-resources",
+        updated: RESOURCE_LAST_REVIEWED,
+        lat: 42.3987,
+        lng: -83.1618,
+        tags: ["Youth meals", "Congregate meal", "Monday-Friday"]
+      },
+      {
+        id: "cod-kemeny-youth",
+        name: "Kemeny Recreation Center",
+        type: "youth",
+        category: "Free supper for children 18 and under",
+        schedule: "Monday-Friday, 4:30 PM-6:30 PM",
+        address: "2260 S Fort St, Detroit, MI 48217",
+        neighborhood: "Southwest Detroit",
+        phone: "(313) 224-1100",
+        source: "City of Detroit Parks & Recreation",
+        sourceUrl: "https://detroitmi.gov/departments/detroit-parks-recreation/recreation-centers/food-resources",
+        updated: RESOURCE_LAST_REVIEWED,
+        lat: 42.2779,
+        lng: -83.1387,
+        tags: ["Youth meals", "Congregate meal", "Monday-Friday"]
+      },
+      {
+        id: "cod-patton-senior",
+        name: "Patton Recreation Center",
+        type: "senior",
+        category: "Senior frozen meal pickup",
+        schedule: "Wednesdays, 11:30 AM-1:00 PM",
+        address: "2301 Woodmere, Detroit, MI 48209",
+        neighborhood: "Southwest Detroit",
+        phone: "(313) 224-1100",
+        source: "City of Detroit Parks & Recreation",
+        sourceUrl: "https://detroitmi.gov/departments/detroit-parks-recreation/recreation-centers/food-resources",
+        updated: RESOURCE_LAST_REVIEWED,
+        lat: 42.3063,
+        lng: -83.1224,
+        tags: ["Senior meals", "60+", "Wednesday"]
+      },
+      {
+        id: "cod-northwest-activities",
+        name: "Northwest Activities Center",
+        type: "pantry",
+        category: "Gleaners groceries",
+        schedule: "Every other Monday, 2:00 PM-4:00 PM",
+        address: "18100 Meyers Rd, Detroit, MI 48235",
+        neighborhood: "Northwest Detroit",
+        phone: "(313) 578-7500",
+        source: "City of Detroit Parks & Recreation",
+        sourceUrl: "https://detroitmi.gov/departments/detroit-parks-recreation/recreation-centers/food-resources",
+        updated: RESOURCE_LAST_REVIEWED,
+        lat: 42.4235,
+        lng: -83.1717,
+        tags: ["Groceries", "Gleaners", "Every other Monday"]
+      },
+      {
+        id: "wellness-riverwalk",
+        name: "Detroit Riverwalk",
+        type: "wellness",
+        category: "Walking and running route",
+        schedule: "Open daily",
+        address: "1340 Atwater St, Detroit, MI 48207",
+        neighborhood: "Riverfront",
+        phone: "",
+        source: "Run 4 Your Mind wellness resource",
+        sourceUrl: "https://detroitriverfront.org/",
+        updated: RESOURCE_LAST_REVIEWED,
+        lat: 42.3332,
+        lng: -83.0317,
+        tags: ["Walking", "Running", "Outdoor"]
+      },
+      {
+        id: "wellness-dequindre-cut",
+        name: "Dequindre Cut Greenway",
+        type: "wellness",
+        category: "Walking and running route",
+        schedule: "Open daily",
+        address: "Dequindre Cut Greenway, Detroit, MI 48207",
+        neighborhood: "Eastern Market / Riverfront",
+        phone: "",
+        source: "Run 4 Your Mind wellness resource",
+        sourceUrl: "https://detroitriverfront.org/riverfront/dequindre-cut",
+        updated: RESOURCE_LAST_REVIEWED,
+        lat: 42.3438,
+        lng: -83.0294,
+        tags: ["Walking", "Running", "Bike-friendly"]
+      }
+    ];
+
+    const POWERBI_REPORT_URL = "https://app.powerbigov.us/view?r=eyJrIjoiYWIyNmZlOTctNzRjYy00NDVlLTg1YTMtZDU3OTI3ZmRiNTYxIiwidCI6IjZlMWZjZmQ3LTI1YjQtNGNkMy1iODM2LWE4NjcxMWJkNmYzNCJ9";
+    const POWERBI_ROWS = [
+      {
+            "name": "ALLEN PARK CHURCH OF CHRIST - FOOD PANTRY",
+            "address": "23610 OUTER DRIVE, ALLEN PARK, MI 48101",
+            "phone": "734-331-6863",
+            "website": "https://www.facebook.com/AllenParkChurchofChrist#",
+            "requirements": "PRE-REGISTRATION BY PHONE REQUIRED"
+      },
+      {
+            "name": "ALLEN PARK PRESBYTERIAN CHURCH",
+            "address": "7101 PARK AVE., ALLEN PARK , MI 48101",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "ALTERNATIVES FOR GIRLS",
+            "address": "903 W. GRAND BOULEVARD, DETROIT, MI 48208",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "AMERICA'S COMMUNITY COUNCIL",
+            "address": "110 W. 7 MILE RD., HIGHLAND PARK, MI 48203",
+            "phone": "248-559-1990",
+            "website": "https://ampleharvest.org/food-pantries/acc-pantry-of-plenty-7919/",
+            "requirements": "PHONE CALL RECOMMENDED FOR MORE DETAILS"
+      },
+      {
+            "name": "ANNE VISGER PREPARATORY ACADEMY",
+            "address": "11121 W. JEFFERSON, RIVER ROUGE, MI 48218",
+            "phone": "",
+            "website": "https://riverrougeschools.org/schools/ann-visger-elementary-school/",
+            "requirements": ""
+      },
+      {
+            "name": "ARAB-AMERICAN AND CHALEAN COUNCIL",
+            "address": "62 WEST SEVEN MILE RD, HIGHLAND PARK, MI 48203",
+            "phone": "313-369-3100 or 248-398-5510",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "AUNTIE NA'S",
+            "address": "12028 YELLOWSTONE, DETROIT, MI 48204",
+            "phone": "",
+            "website": "https://www.auntienashouse.org/",
+            "requirements": ""
+      },
+      {
+            "name": "AVALON VILLAGE",
+            "address": "24 AVALON, HIGHLAND PARK, MI 48203",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "BASILICA STE. ANNE DE DETROIT PANTRY",
+            "address": "1000 STE. ANNE, DETROIT, MI 48216",
+            "phone": "313-496-1701",
+            "website": "https://ste-anne.org/",
+            "requirements": ""
+      },
+      {
+            "name": "BETHANY LUTHERAN CHURCH",
+            "address": "11475 EAST OUTER DR, DETROIT, MI 48224",
+            "phone": "313-885-7721 X0180",
+            "website": "https://bethanydetroit.org/",
+            "requirements": ""
+      },
+      {
+            "name": "BETHEL A.M.E. CHURCH",
+            "address": "5050 ST. ANTOINE, DETROIT , MI 48202",
+            "phone": "313-831-8810",
+            "website": "https://www.bethelamechurchdetroit.org/",
+            "requirements": ""
+      },
+      {
+            "name": "BETHEL BAPTIST - TRENTON",
+            "address": "13330 TRENTON, SOUTHGATE, MI 48195",
+            "phone": "734-284-6300",
+            "website": "https://www.bethelbaptistsouthgate.com/missions",
+            "requirements": "VALID ID REQUIRED"
+      },
+      {
+            "name": "BETHLEHEM TEMPLE OF PRAISE",
+            "address": "5039 WOODWARD ST, WAYNE, MI 48184",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "BLACK BOTTOM BUSINESS LLC",
+            "address": "1812 FIELD, DETROIT, MI 48214",
+            "phone": "313-651-6329",
+            "website": "https://westvillagedetroit.org/fridge",
+            "requirements": ""
+      },
+      {
+            "name": "BLESSED HOPE - FOOD DISTRIBUTION CENTER",
+            "address": "3804 HAZEL AVE, LINCOLN PARK, MI 48146",
+            "phone": "",
+            "website": "https://www.facebook.com/groups/125112628131754/about",
+            "requirements": ""
+      },
+      {
+            "name": "BODY OF CHRIST INTERNATIONAL",
+            "address": "9555 ST. MARY'S STREET, DETROIT, MI 48227",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "BOOKER T. DOZIER RECREATION CENTER",
+            "address": "2025 MIDDLEBELT RD, INKSTER, MI 48141",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "BRIGHTMOOR ARTISANS COLLECTIVE",
+            "address": "22735 FENKELL AVE, DETROIT, MI 48223",
+            "phone": "313-437-1057",
+            "website": "https://brightmoorartisans.org/bmoor-nourished-free-pantry",
+            "requirements": ""
+      },
+      {
+            "name": "BRIGHTMOOR CONNECTION FOOD PANTRY",
+            "address": "20740 GRAND RIVER AVENUE, DETROIT, MI 48219",
+            "phone": "313-740-7688",
+            "website": "https://brightmoorconnection.org/",
+            "requirements": "PHONE CALL RECOMMENDED FOR MORE DETAILS"
+      },
+      {
+            "name": "C&W COMMUNITY OUTREACH/THIRD HOPE BAPTIST CHURCH",
+            "address": "12850 PLYMOUTH, DETROIT, MI 48227",
+            "phone": "313-491-7890",
+            "website": "https://thirdnewhope.com/",
+            "requirements": ""
+      },
+      {
+            "name": "CALVARY PRESBYTERIAN CHURCH OF DETROIT",
+            "address": "19125 GREENVIEW AVE, DETROIT, MI 48219",
+            "phone": "313-537-2590",
+            "website": "https://calvarypcdetroit.org/",
+            "requirements": "MUST BE A SENIOR 60 YEARS OR OLDER. ZIP CODES 48219 OR 48235"
+      },
+      {
+            "name": "CANTON COMMUNITY ASSISTANCE PROGRAMS",
+            "address": "1150 S. CANTON CENTER RD, CANTON, MI 48188",
+            "phone": "734-394-5100",
+            "website": "https://www.cantonmi.gov/661/Community-Assistance-Programs",
+            "requirements": ""
+      },
+      {
+            "name": "CAPUCHIN SERVICES CENTER",
+            "address": "6333 MEDBURY ST, DETROIT, MI 48211",
+            "phone": "313-925-1370",
+            "website": "https://www.cskdetroit.org/en/locations/capuchin-services-center/",
+            "requirements": ""
+      },
+      {
+            "name": "CAPUCHIN SOUP KITCHEN",
+            "address": "1820 MT. ELLIOT, DETROIT, MI 48207",
+            "phone": "313-579-2100",
+            "website": "https://www.cskdetroit.org/en/locations/capuchin-services-center/",
+            "requirements": ""
+      },
+      {
+            "name": "CARING COMMUNITY CENTER",
+            "address": "14531 GRAND RIVER, DETROIT, MI 48227",
+            "phone": "313-836-4987",
+            "website": "https://www.ctmbc.online/caring-community-center",
+            "requirements": ""
+      },
+      {
+            "name": "CATHEDRAL OF FAITH",
+            "address": "13925 BURT RD, DETROIT, MI 48223",
+            "phone": "313-533-9673",
+            "website": "https://www.facebook.com/p/Cathedral-of-Faith-100095240924566/",
+            "requirements": ""
+      },
+      {
+            "name": "CATHOLIC CHARITIES OF WAYNE COUNTY AND SE MICHIGAN",
+            "address": "6945 WAGNER STREET, DETROIT, MI 48210",
+            "phone": "586-416-2300 X3321",
+            "website": "https://www.ccsem.org/all-saints-soup-kitchen-food-pantry",
+            "requirements": "SERVES LOW INCOME (AT OR BELOW 130% AREA MEDIAN INCOME FOR HOUSEHOLD SIZE) AND RESIDENTS IN ZIP CODE 48209 OR 48210"
+      },
+      {
+            "name": "CATHOLIC CHURCH OF THE MODONNA",
+            "address": "1125 OAKMAN BLVD, DETROIT, MI 48238",
+            "phone": "313-868-4308",
+            "website": "https://www.stmosestheblack.org/",
+            "requirements": ""
+      },
+      {
+            "name": "CENTRAL DETROIT CHRISTIAN",
+            "address": "1550 TAYLOR ST, DETROIT, MI 48206",
+            "phone": "313-873-0064",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "CHANDLER CHURCH - CHANDLER CENTER",
+            "address": "2069 CHANDLER, LINCOLN PARK, MI 48146",
+            "phone": "",
+            "website": "https://www.dearbornfmchurch.org/chandler-church",
+            "requirements": ""
+      },
+      {
+            "name": "CHARLES REID COMMUNITY HELP CENTER",
+            "address": "2785 E. GRAND BLVD, DETROIT, MI 48211",
+            "phone": "313-666-0511",
+            "website": "",
+            "requirements": "PRE-REGISTRATION BY PHONE REQUIRED"
+      },
+      {
+            "name": "CHRIST CHURCH OF REDFORD",
+            "address": "14350 WORMER, REDFORD, MI 48239",
+            "phone": "313-534-3462",
+            "website": "https://www.christchurchredford.org/",
+            "requirements": ""
+      },
+      {
+            "name": "CHRIST THE KING CHURCH",
+            "address": "16700 PENNSYLVANIA ROAD, SOUTHGATE, MI 48195",
+            "phone": "",
+            "website": "",
+            "requirements": "MUST BE FLAT ROCK RESIDENT. PROOF OF RESIDENCE REQUIRED."
+      },
+      {
+            "name": "CHRIST THE KING LUTHERAN",
+            "address": "15600 TRENTON RD, SOUTHGATE, MI 48195",
+            "phone": "734-285-3533",
+            "website": "https://ctk.me/ministries-2/",
+            "requirements": "SERVES THE FOLLOWING ZIPS: 48134, 48183, 48192, 48195, 48101, 48122, 48209. VALID ID REQUIRED"
+      },
+      {
+            "name": "CHURCH OF CHRIST WESTSIDE",
+            "address": "6025 WOODROW, DETROIT , MI 48210",
+            "phone": "313-898-6121",
+            "website": "",
+            "requirements": "PHONE CALL RECOMMENDED FOR MORE DETAILS"
+      },
+      {
+            "name": "CHURCH OF GOD MT. ASSEMBLY",
+            "address": "494 W COLUMBIA AVE, BELLEVILLE, MI 48201",
+            "phone": "",
+            "website": "https://www.findhelp.org/provider/belleville-church-of-god-mountain-assembly--belleville-mi/4934463764299776?postal=48111",
+            "requirements": ""
+      },
+      {
+            "name": "CHURCH OF GOD OF BALDWIN",
+            "address": "5540 TALBOT, DETROIT, MI 48212",
+            "phone": "313-366-3190",
+            "website": "https://www.facebook.com/pages/Church-of-God-of-Baldwin/111650158874255",
+            "requirements": ""
+      },
+      {
+            "name": "CHURCH OF MESSIAH",
+            "address": "231 E. GRAND BLVD, DETROIT, MI 48207",
+            "phone": "313-567-1158",
+            "website": "https://churchofthemessiahdetroit.org/",
+            "requirements": ""
+      },
+      {
+            "name": "CITIZENS CHANGING COMMUNITIES",
+            "address": "35774 ABBEY DR, ROMULUS, MI 48174",
+            "phone": "",
+            "website": "https://cc-communities.org/",
+            "requirements": ""
+      },
+      {
+            "name": "CITY COVENANT",
+            "address": "13624 STOUT STREET, DETROIT, MI 48223",
+            "phone": "313-535-1084",
+            "website": "https://citycovenantchurch.org/",
+            "requirements": ""
+      },
+      {
+            "name": "CITY OF LIVONIA FOOD DISTRIBUTION",
+            "address": "10800 FARMINGTON, LIVONIA , MI 48150",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "CITY OF MELVINDALE",
+            "address": "3100 OAKWOOD, MELVINDALE, MI 48122",
+            "phone": "",
+            "website": "https://melvindale.org/",
+            "requirements": ""
+      },
+      {
+            "name": "CITY OF TAYLOR COMMUNITY CONNECTION",
+            "address": "26650 EUREKA, TAYLOR, MI 48180",
+            "phone": "734-955-3744",
+            "website": "https://www.freefood.org/l/city-of-taylor-community-connection",
+            "requirements": "TAYLOR RESIDENTS. PROOF OF ADDRESS IN TAYLOR REQUIRED."
+      },
+      {
+            "name": "CITY OF WOODHAVEN",
+            "address": "23101 HALL ROAD, WOODHAVEN, MI 48134",
+            "phone": "",
+            "website": "",
+            "requirements": "ONLY RESIDENTS IN ZIP CODE 48212"
+      },
+      {
+            "name": "COMMUNITY LUTHERAN HELPING HANDS",
+            "address": "23984 GIBRALTAR ROAD, FLAT ROCK, MI 48134",
+            "phone": "734-782-0563",
+            "website": "",
+            "requirements": "MUST BE A RESIDENT OF FLAT ROCK. PHONE CALL RECOMMENDED FOR MORE DETAILS"
+      },
+      {
+            "name": "COMMUNITY SERVICES CDC/DETROIT MUSLIM MISSION",
+            "address": "11529 LINWOOD, DETROIT, MI 48206",
+            "phone": "313-865-6770",
+            "website": "https://detroitmuslimmission.com/mobile-food-pantry",
+            "requirements": ""
+      },
+      {
+            "name": "COMMUNITY SERVICES CDC/DETROIT MUSLIM MISSION",
+            "address": "15874 WYOMING, DETROIT, MI 48238",
+            "phone": "313-865-6770",
+            "website": "https://detroitmuslimmission.com/mobile-food-pantry",
+            "requirements": ""
+      },
+      {
+            "name": "COMMUNITY SERVICES CDC/DETROIT MUSLIM MISSION",
+            "address": "1605 WEST DAVIDSON AVENUE, DETROIT, MI 48238",
+            "phone": "313-865-6770",
+            "website": "https://detroitmuslimmission.com/mobile-food-pantry",
+            "requirements": ""
+      },
+      {
+            "name": "COMMUNITY SERVICES CDC/DETROIT MUSLIM MISSION",
+            "address": "19101 EVERGREEN, DETROIT, MI 48219",
+            "phone": "313-865-6770",
+            "website": "https://detroitmuslimmission.com/mobile-food-pantry",
+            "requirements": ""
+      },
+      {
+            "name": "COMMUNITY SERVICES CDC/DETROIT MUSLIM MISSION",
+            "address": "20201 PLYMOUTH ROAD, DETROIT, MI 48228",
+            "phone": "313-865-6770",
+            "website": "https://detroitmuslimmission.com/mobile-food-pantry",
+            "requirements": ""
+      },
+      {
+            "name": "COMMUNITY SERVICES CDC/DETROIT MUSLIM MISSION",
+            "address": "21500 SCHOOLCRAFT, DETROIT, MI 48223",
+            "phone": "313-865-6770",
+            "website": "https://detroitmuslimmission.com/mobile-food-pantry",
+            "requirements": ""
+      },
+      {
+            "name": "COMMUNITY SERVICES CDC/DETROIT MUSLIM MISSION",
+            "address": "2433 WEST GRAND STREET, DETROIT, MI 48238",
+            "phone": "313-865-6770",
+            "website": "https://detroitmuslimmission.com/mobile-food-pantry",
+            "requirements": ""
+      },
+      {
+            "name": "COMMUNITY SERVICES CDC/DETROIT MUSLIM MISSION",
+            "address": "901 PALLISTER, DETROIT, MI 48202",
+            "phone": "313-865-6770",
+            "website": "https://detroitmuslimmission.com/mobile-food-pantry",
+            "requirements": ""
+      },
+      {
+            "name": "CORE CITY NEIGHBORHOODS, INC.",
+            "address": "3301 23RD STREET, DETROIT, MI 48208",
+            "phone": "313-894-8431",
+            "website": "",
+            "requirements": "PHONE CALL RECOMMENDED FOR MORE DETAILS"
+      },
+      {
+            "name": "CORPUS CHRISTI PARISH",
+            "address": "16000 PEMBROKE, DETROIT, MI 48235",
+            "phone": "313-537-5770",
+            "website": "https://www.corpuschristi-detroit.org/",
+            "requirements": ""
+      },
+      {
+            "name": "COVENANT HOUSE OF MICHIGAN",
+            "address": "2959 MARTIN LUTHER KING BLVD, DETROIT, MI 48208",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "CROSSROADS",
+            "address": "2424 W GRAND BLVD, DETROIT, MI 48208",
+            "phone": "313-605-3211 or 313-831-2000",
+            "website": "https://www.crossroadsofmichigan.org/",
+            "requirements": ""
+      },
+      {
+            "name": "DEARBORN 1st UNITED METHODIST CHURCH",
+            "address": "22124 GARISSON, DEARBORN, MI 48124",
+            "phone": "313-563-5200",
+            "website": "https://dearbornfirstumc.org/serve",
+            "requirements": ""
+      },
+      {
+            "name": "DELRAY UNITED ACTION COUNCIL",
+            "address": "7914 W JEFFERSON, DETROIT, MI 48209",
+            "phone": "313-842-8620",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "DETROIT CENTRAL CITY COMMUNITY MENTAL HEALTH",
+            "address": "10 PETERBORO, DETROIT, MI 48201",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "DETROIT COMMUNITY FRIDGE (ON MCGRAW)",
+            "address": "6900 MCGRAW, DETROIT, MI 48210",
+            "phone": "",
+            "website": "https://detfridge.com/",
+            "requirements": ""
+      },
+      {
+            "name": "DETROIT RESCUE MISSION 3RD STREET & WOODWARD",
+            "address": "3535 3RD AVE, DETROIT, MI 48201",
+            "phone": "313-993-6703",
+            "website": "https://drmm.org/",
+            "requirements": ""
+      },
+      {
+            "name": "DEVON AIRE COMMUNITY CHURCH OF THE ZANARENE",
+            "address": "9435 HENRY RUFF, LIVONIA, MI 48150",
+            "phone": "",
+            "website": "https://dacclivonia.com/",
+            "requirements": ""
+      },
+      {
+            "name": "DEXTER AVENUE BAPTIST CHURCH",
+            "address": "13350 DEXTER AVE, DETROIT, MI 48238",
+            "phone": "313-869-4878",
+            "website": "https://www.facebook.com/DexterAvenueOfDetroit",
+            "requirements": ""
+      },
+      {
+            "name": "DISCIPLES OF CHRIST BAPTIST CHURCH",
+            "address": "13501 SCHAEFER HWY, DETROIT, MI 48227",
+            "phone": "313-737-3644",
+            "website": "https://www.facebook.com/disciplesofchrist313/",
+            "requirements": ""
+      },
+      {
+            "name": "DOWNRIVER COMMUNITY FOOD PANTRY",
+            "address": "135 SUPERIOR BLVD, WYANDOTTE, MI 48192",
+            "phone": "734-281-6733",
+            "website": "https://stvpp.org/ministry/downriver-community-food-pantry/",
+            "requirements": "PHONE CALL RECOMMENDED FOR MORE DETAILS"
+      },
+      {
+            "name": "DOWNRIVER FISH AND LOAVES",
+            "address": "25670 NORTHLINE RD, TAYLOR, MI 48180",
+            "phone": "734-442-0031",
+            "website": "https://www.flcfp.org/",
+            "requirements": "INCOME-ELIGIBLE RESIDENTS OF ALLEN PARK, BROWNSTOWN TOWNSHIP, DEARBORN HEIGHTS, ROMULUS, SOUTHGATE, TAYLOR, AND WOODHAVEN ARE ELIGIBLE TO ENROLL AT FISH & LOAVES FOR FOOD ASSISTANCE. APPOINTMENT BY PHONE REQUIRED"
+      },
+      {
+            "name": "DOWNRIVER FOSTER CLOSET",
+            "address": "1753 FORD AVE, WYANDOTTE, MI 48192",
+            "phone": "",
+            "website": "https://www.downriverfostercloset.org/",
+            "requirements": ""
+      },
+      {
+            "name": "DRMM-CHRISTIAN GUIDANCE",
+            "address": "19211 ANGLIN, DETROIT, MI 48234",
+            "phone": "313-993-4700",
+            "website": "",
+            "requirements": "PHONE CALL RECOMMENDED FOR MORE DETAILS"
+      },
+      {
+            "name": "DRMM-GENESIS CHICAGO",
+            "address": "12900 W CHICAGO, DETROIT, MI 48227",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "DRMM-OASIS",
+            "address": "13220 WOODWARD AVENUE, HIGHLAND PARK, MI 48203",
+            "phone": "",
+            "website": "https://drmm.org/",
+            "requirements": ""
+      },
+      {
+            "name": "ECORSE PUBLIC SCHOOLS - KENNEDY BUILDING",
+            "address": "27225 WEST OUTER DRIVE, ECORSE, MI 48229",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "ECORSE SEVENTH-DAY ADVENTIST CHURCH",
+            "address": "3834 10TH STREET, ECORSE, MI 48229",
+            "phone": "313-928-9212",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "ELMWOOD BLESSING BOX - NEW BOSTON",
+            "address": "39231 ISLAND DR, NEW BOSTON, MI 48164",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "EMMANUEL HOUSE RECOVERY FOR VETS",
+            "address": "14750 ST. MARYS, DETROIT, MI 48227",
+            "phone": "313-397-2372",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "ETERNAL LIGHT ORGANIZATION (3 LOCATIONS)",
+            "address": "5752 TELEGRAPH ROAD, DEARBORN HEIGHTS, MI 48127",
+            "phone": "313-292-1220 or 734-506-0626",
+            "website": "",
+            "requirements": "PHONE CALL RECOMMENDED FOR MORE DETAILS"
+      },
+      {
+            "name": "EVANGEL MINISTRIES/180 CHURCH",
+            "address": "13660 STANSBURY, DETROIT, MI 48227",
+            "phone": "313-354-9390",
+            "website": "https://180church.cc/",
+            "requirements": ""
+      },
+      {
+            "name": "EXODUS FOOD PANTRY",
+            "address": "8173 KENNEY, DETROIT, MI 48234",
+            "phone": "313-254-3038",
+            "website": "https://exoduspantry.com/",
+            "requirements": "DRIVE THRU PICK UP ONLY"
+      },
+      {
+            "name": "FAITH CHRISTIAN ASSEMBLY",
+            "address": "25201 OUTER DRIVE, MELVINDALE, MI 48122",
+            "phone": "313-928-8305",
+            "website": "https://faithdetroit.com/bread-of-life",
+            "requirements": "PHONE CALL REQUIRED"
+      },
+      {
+            "name": "FED BY FAITH",
+            "address": "25402 ARSENAL ROAD, BROWNSTOWN, MI 48134",
+            "phone": "734-782-9468",
+            "website": "",
+            "requirements": "PHONE CALL RECOMMENDED FOR MORE DETAILS"
+      },
+      {
+            "name": "FEED YOUR NEIGHBORDHOOD LLC",
+            "address": "12530 MACK, DETROIT, MI 48215",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "FIRST BAPTIST CHURCH OF WYANDOTTE",
+            "address": "1925 FORD AVE, WYANDOTTE, MI 48192",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "FIRST BAPTIST INSTITUTIONAL CHURCH",
+            "address": "17101 W SEVEN MILE RD, DETROIT, MI 48235",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "FIRST BAPTIST WORLD CHANGES",
+            "address": "22575 W 8 MILE RD, DETROIT, MI 48219",
+            "phone": "313-255-0212",
+            "website": "https://www.firstbaptistworldchangersinternational.com/",
+            "requirements": ""
+      },
+      {
+            "name": "FIRST CONGREGATIONAL CHURCH OF GIBRALTAR",
+            "address": "29885 BAYVIEW DR, GIBRALTAR, MI 48173",
+            "phone": "734-676-5266",
+            "website": "https://uccgibraltar.com/index.html",
+            "requirements": ""
+      },
+      {
+            "name": "FIRSTWORKS FREE STORE",
+            "address": "5650 S. TELEGRAPH RD, DEARBORN HEIGHTS, MI 48125",
+            "phone": "313-292-1220",
+            "website": "https://dhfirstag.org/food-pantry/",
+            "requirements": "VALID ID REQUIRED"
+      },
+      {
+            "name": "FOCUS HOPE - INKSTER",
+            "address": "759 INKSTER RD., INKSTER, MI 48141",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "FORD COMMUNITY AND PERFORMING ARTS CENTER",
+            "address": "15801 MICHIGAN AVE, DEARBORN, MI 48126",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "FORGOTTEN HARVEST COMMUNITY CHOICE MARKET PANTRY",
+            "address": "15000 W. EIGHT MILE RD, OAK PARK, MI 48237",
+            "phone": "",
+            "website": "https://www.forgottenharvest.org/forgotten-harvests-client-choice-market-fosters-dignity-in-food-assistance/",
+            "requirements": ""
+      },
+      {
+            "name": "FRANKLIN WRIGHT SETTLEMENTS",
+            "address": "3360 CHARLEVOIX, DETROIT, MI 48207",
+            "phone": "313-356-5021",
+            "website": "",
+            "requirements": "APPOINTMENT REQUIRED"
+      },
+      {
+            "name": "FREEDOM HOUSE",
+            "address": "1777 N RADEMACHER STREET, DETROIT, MI 48209",
+            "phone": "313-964-4320",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "GENESIS HOPE",
+            "address": "7200 MACK, DETROIT, MI 48214",
+            "phone": "313-731-2063",
+            "website": "https://www.genesishope.org/",
+            "requirements": ""
+      },
+      {
+            "name": "GOD'S STOREHOUSE",
+            "address": "18301 JOHN R STREET, DETROIT, MI 48203",
+            "phone": "",
+            "website": "",
+            "requirements": "www.gods-storehouse.org"
+      },
+      {
+            "name": "GOMPERS/BRIGHTMOOR ALLIANCE",
+            "address": "14450 BURT RD., DETROIT, MI 48223",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "GOSPEL TABERNACLE - BUENA VISTA",
+            "address": "12935 BUENA VISTA, DETROIT, MI 48227",
+            "phone": "248-518-0876",
+            "website": "",
+            "requirements": "PHONE CALL RECOMMENDED FOR MORE DETAILS"
+      },
+      {
+            "name": "GRACE CHURCH OF THE NAZARENE",
+            "address": "18020 HOOVER, DETROIT , MI 48205",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "GRACE POINT CHURCH",
+            "address": "15633 PENNSYLVANIA, RIVERVIEW, MI 48193",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "GRACE TEMPLE",
+            "address": "12521 DEXTER, DETROIT, MI 48206",
+            "phone": "313-931-6095",
+            "website": "",
+            "requirements": "PHONE CALL RECOMMENDED FOR MORE DETAILS"
+      },
+      {
+            "name": "GRACIOUS SAVIOR EVAGELICAL LUTHERAN CHURCH",
+            "address": "194884 JAMES COUZENS FWY, DETROIT, MI 48235",
+            "phone": "313-342-4950",
+            "website": "https://www.gracioussaviourlutheran.org/ministries/foodpantry/",
+            "requirements": ""
+      },
+      {
+            "name": "GREATER EMMANUEL INSTITUTIONAL C.O.G.I.C",
+            "address": "19190 SCHAEFER, DETROIT, MI 48235",
+            "phone": "313-864-7170",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "GREATER NORTHWEST COGIC",
+            "address": "15811 ROSA PARKS BLVD, DETROIT, MI 48238",
+            "phone": "313-345-9111",
+            "website": "https://www.findhelp.org/provider/greater-northwest-church-of-god-in-christ--detroit-mi/6269342497112064?postal=48201",
+            "requirements": ""
+      },
+      {
+            "name": "HANDS UP INC",
+            "address": "33250 WEST WARREN ROAD, WESTLAND, MI 48228",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "HANDZ OF HOPE MISSION INC.",
+            "address": "14151 TRENTON RD, SOUTHGATE, MI 48195",
+            "phone": "",
+            "website": "https://handzofhopemission.org/",
+            "requirements": ""
+      },
+      {
+            "name": "HARTFORD AGAPE HUNGER",
+            "address": "18700 JAMES COUZENS, DETROIT, MI 48235",
+            "phone": "313-861-1200",
+            "website": "https://hmbcdetroit.org/",
+            "requirements": ""
+      },
+      {
+            "name": "HARTFORD MEMORIAL BAPTIST CHURCH",
+            "address": "14000 W SEVEN MILE RD, DETROIT, MI 48235",
+            "phone": "",
+            "website": "https://hmbcdetroit.org/",
+            "requirements": ""
+      },
+      {
+            "name": "HARVEST BIBLE CHURCH",
+            "address": "6420 NORTH NEWBURGH ROAD, WESTLAND, MI 48185",
+            "phone": "734-895-3280",
+            "website": "https://harvestdetroitwest.org/food-pantry",
+            "requirements": "ALL SERVED ON FIRST COME, FIRST SERVE BASIS."
+      },
+      {
+            "name": "HARVEST HOUSE/DETROIT FRIENDSHIP HOUSE",
+            "address": "9540 CONANT, HAMTRAMCK, MI 48212",
+            "phone": "313-871-7443",
+            "website": "https://www.detroitfriendshiphouse.org/",
+            "requirements": "NEW CLIENTS MUST REGISTER AND SHOW VALID ID"
+      },
+      {
+            "name": "HAVEN OF HOPE",
+            "address": "7549 JOY ROAD, DETROIT, MI 48204",
+            "phone": "313-610-7075",
+            "website": "https://havenofhopecares.com/",
+            "requirements": "PHONE CALL RECOMMENDED FOR MORE DETAILS"
+      },
+      {
+            "name": "HEART TO HEART MINISTRIES",
+            "address": "3401 OAKWOOD BLVD, MELVINDALE, MI 48122",
+            "phone": "",
+            "website": "https://www.heart2heartministriesfia.com/",
+            "requirements": ""
+      },
+      {
+            "name": "HELP'S ON THE WAY",
+            "address": "5358 S BEECH DALY, DEARBORN HEIGHTS, MI 48125",
+            "phone": "734-326-3885 or 313-908-7104",
+            "website": "https://www.facebook.com/HIOTW/",
+            "requirements": "PHONE CALL RECOMMENDED FOR MORE DETAILS"
+      },
+      {
+            "name": "HISTORIC LITTLE ROCK MISSIONARY BAPTIST CHURCH",
+            "address": "9000 WOODWARD AVE., DETROIT, MI 48202",
+            "phone": "313-872-2900",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "HOLY REDEEMER FOOD PANTRY/MOST HOLY TRINITY PARISH",
+            "address": "1721 JUNCTION, DETROIT, MI 48209",
+            "phone": "313-258-3386",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "I AM CHURCH",
+            "address": "22144 NORTH HURON RIVER ROAD, ROCKWOOD, MI 48173",
+            "phone": "734-493-2374",
+            "website": "",
+            "requirements": "ID REQUIRED"
+      },
+      {
+            "name": "IN HIS NAME MINISTRY/WAINWRIGHT COMMUNITY MEAL",
+            "address": "98 SUPERIOR, WYANDOTTE, MI 48192",
+            "phone": "734-285-2568",
+            "website": "https://www.1st-congregational.org/index.html",
+            "requirements": ""
+      },
+      {
+            "name": "IN HIS PRESCENCE MINISTRIES",
+            "address": "26500 GRAND RIVER, REDFORD, MI 48240",
+            "phone": "313-533-1956",
+            "website": "https://sharedetroit.org/nonprofit/kingdom-presence",
+            "requirements": "PHONE CALL RECOMMENDED FOR MORE DETAILS"
+      },
+      {
+            "name": "IN THE TRENCHES",
+            "address": "304 S. MORRELL, DETROIT, MI 48209",
+            "phone": "",
+            "website": "",
+            "requirements": "LOCATION CLOSED THE 1ST FRIDAY AND SATURDAY OF THE MONTH"
+      },
+      {
+            "name": "INKSTER HOUSING COMMISSION-DEMBY",
+            "address": "4360 HICKORY ST., INKSTER, MI 48141",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "INKSTER HOUSING COMMISSION-LEMOYNE GARDENS",
+            "address": "29999 PINE ST, INKSTER, MI 48141",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "INTERIM HOUSE- YWCA",
+            "address": "985 E. Jefferson Avenue, DETROIT , MI 48207",
+            "phone": "313-259-9922",
+            "website": "https://www.ywcadetroit.org/programs/ywca-interim-house/",
+            "requirements": ""
+      },
+      {
+            "name": "INTERNATIONAL GOSPEL CENTER",
+            "address": "375 SALLIOTTE, ECORSE, MI 48229",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "ISLAMIC HOUSE OF WISDOM",
+            "address": "22575 ANN ARBOR TRAIL, DEARBORN HEIGHTS, MI 48127",
+            "phone": "",
+            "website": "http://www.islamichouseofwisdom.com/CareSupport",
+            "requirements": ""
+      },
+      {
+            "name": "JERMAINE JACKSON (CAIRNS)",
+            "address": "9157 GRATIOT, DETROIT, MI 48213",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "JESUS TABERNACLE",
+            "address": "11001 CHALMERS ROAD, DETROIT, MI 48213",
+            "phone": "313-372-3110",
+            "website": "https://jtdm.org/",
+            "requirements": ""
+      },
+      {
+            "name": "KEMENY RECREATION CENTER",
+            "address": "2260 S. FORT STREET, DETROIT, MI 48217",
+            "phone": "313-224-1100",
+            "website": "https://detroitmi.gov/departments/detroit-parks-recreation/recreation-centers/food-resources",
+            "requirements": "THIS PROGRAM PROVIDES A FREE NUTRITIOUS SUPPER FOR CHILDREN 18 AND UNDER WHO PARTICIPATE IN VAIRED AFTER SCHOOL PROGRAMS AT THE RECREATION CENTERS. CHILDREN ARE REQUIRED TO EAT THE MEALS AT THE RECREATION SITES. THERE IS NO PICK-UP OPTION FOR PARENTS OR CHILDREN."
+      },
+      {
+            "name": "LA CASA DE MI PADRE",
+            "address": "999 FORT ST., LINCOLN PARK, MI 48146",
+            "phone": "248-967-1500",
+            "website": "https://www.foodhelpline.org/resources/la-casa-de-mi-padre",
+            "requirements": ""
+      },
+      {
+            "name": "LAKERIDGE VILLAGE FENKELL",
+            "address": "15025 FENKELL, DETROIT, MI 48227",
+            "phone": "313-855-6035",
+            "website": "https://www.lakeridgeministries.com/",
+            "requirements": ""
+      },
+      {
+            "name": "LATINO FAMILY SERVICES",
+            "address": "3815 W. FORT ST., DETROIT, MI 48216",
+            "phone": "313-841-7380",
+            "website": "http://latinofamilyservices.org/",
+            "requirements": ""
+      },
+      {
+            "name": "LIFE CHALLENGE",
+            "address": "17667 PIERSON STREET, DETROIT, MI 48219",
+            "phone": "",
+            "website": "https://lcministries.org/",
+            "requirements": ""
+      },
+      {
+            "name": "LIGHTHOUSE HOME MISSIONS",
+            "address": "34033 PALMER ROAD, WESTLAND, MI 48186",
+            "phone": "734-326-3885 or 734-397-1777 X2011",
+            "website": "",
+            "requirements": "PRE-REGISTRATION BY PHONE REQUIRED"
+      },
+      {
+            "name": "LINWOOD CHURCH OF CHRIST",
+            "address": "14001 LINWOOD, DETROIT, MI 48238",
+            "phone": "313-868-7795",
+            "website": "https://linwoodchurchofchrist.org/",
+            "requirements": ""
+      },
+      {
+            "name": "LOMAX TEMPLE",
+            "address": "17441 DEQUINDRE, HAMTRAMCK, MI 48212",
+            "phone": "313-893-1463",
+            "website": "https://lomaxtemple.org/contact",
+            "requirements": "SERVES ZIP CODES 48212 & 48203 IN DETROIT"
+      },
+      {
+            "name": "LOVE AND KINDNESS VETERANS CENTER",
+            "address": "12260 CAMDEN, DETROIT, MI 48213",
+            "phone": "313-471-9618",
+            "website": "https://lnkcdc.org/",
+            "requirements": "PHONE CALL RECOMMENDED FOR MORE DETAILS"
+      },
+      {
+            "name": "LOVE JOY CHURCH",
+            "address": "17801 GREELEY STREET, DETROIT, MI 48203",
+            "phone": "734-352-0577",
+            "website": "",
+            "requirements": "PHONE CALL RECOMMENDED FOR MORE DETAILS"
+      },
+      {
+            "name": "MARINER'S INN",
+            "address": "445 LEDYARD STREET, DETROIT, MI 48201",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "MATRIX HUMAN SERVICES",
+            "address": "13560 E MCNICHOLS, DETROIT, MI 48205",
+            "phone": "313-526-4000",
+            "website": "https://www.instagram.com/p/DQU4VAOkgNT/",
+            "requirements": ""
+      },
+      {
+            "name": "MDHHS OFFICE",
+            "address": "12140 Joseph Campau Ave, Hamtramck, MI 48212",
+            "phone": "",
+            "website": "",
+            "requirements": "MUST MAKE AN APPOINTMENT BY EMAIL: FH-WC-HAMTRAMCK@MICHIGAN.GOV"
+      },
+      {
+            "name": "MDHHS OFFICE",
+            "address": "25637 ECORSE, TAYLOR, MI 48180",
+            "phone": "",
+            "website": "",
+            "requirements": "MUST MAKE AN APPOINTMENT BY EMAIL: MDHHS-FH-WC-TAYLOR@MICHIGAN.GOV"
+      },
+      {
+            "name": "MERCADO FOOD HUB",
+            "address": "2826 BAGLEY STREET, DETROIT, MI 48216",
+            "phone": "313-962-4888",
+            "website": "https://www.gcfb.org/give-time/volunteer-opportunities/distribution-centers/mercado-food-hub-pantry/?fbclid=IwAR1Oq6KLYQr3Jk15TP2T3RB3sHoEg2kKHU1mP1Q0iYPSkTFaOeam9LcZiSg_aem_AWX2vaj3PgLuB-dx8kgYkIxsLxDyDN3ZNUQ_kGrUHxa42sHJ0FEy6CkOzmM9LR0HGqachXsVFUEX6VWLE",
+            "requirements": ""
+      },
+      {
+            "name": "MESSIAH CENTER FOR HOPE AT WCCCD",
+            "address": "9555 HAGGERTY RD., BELLEVILLE, MI 48111",
+            "phone": "",
+            "website": "",
+            "requirements": "MANDATORY DRESS CODE: MUST WEAR LONG PANTS & CLOSED TOE SHOES"
+      },
+      {
+            "name": "METHODIST CHILDREN'S HOME",
+            "address": "26645 W 6 MILE RD, REDFORD, MI 48240",
+            "phone": "",
+            "website": "https://mchsmi.org/",
+            "requirements": ""
+      },
+      {
+            "name": "METRO CITY CHURCH",
+            "address": "21080 PENN ST, TAYLOR, MI 48180",
+            "phone": "734-287-2366",
+            "website": "https://www.metrocitychurch.tv/",
+            "requirements": ""
+      },
+      {
+            "name": "METROPOLITAN BAPTIST CHURCH",
+            "address": "13110 14TH STREET, DETROIT, MI 48238",
+            "phone": "313-869-6676",
+            "website": "http://mbcdetroit.org/",
+            "requirements": "PHONE CALL RECOMMENDED FOR MORE DETAILS"
+      },
+      {
+            "name": "METROPOLITAN UNITED METHODIST",
+            "address": "8000 WOODWARD AVE, DETROIT, MI 48202",
+            "phone": "313-875-7407",
+            "website": "https://www.metroumcdetroit.org/",
+            "requirements": "BRING YOUR OWN BAG"
+      },
+      {
+            "name": "MICHIGAN HUMANE SOCIETY",
+            "address": "6175 TRUMBULL, DETROIT, MI 48208",
+            "phone": "313-871-1408",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "MICHIGAN VETERANS FOUNDATION",
+            "address": "4626 GRAND RIVER, DETROIT, MI 48208",
+            "phone": "",
+            "website": "http://www.michiganveteransfoundation.org/",
+            "requirements": ""
+      },
+      {
+            "name": "MILITARY PRESBYTERIAN",
+            "address": "1002 MILITARY, DETROIT, MI 48209",
+            "phone": "313-407-2093",
+            "website": "https://militaryavechurch.com/",
+            "requirements": ""
+      },
+      {
+            "name": "MOST HOLY TRINITY PARISH FOOD PANTRY",
+            "address": "1050 PORTER ST., DETROIT , MI 48226",
+            "phone": "313-965-4450",
+            "website": "https://mhtdetroit.org/outreach/food-pantry/",
+            "requirements": "DUE TO CURRENT LIMITATIONS, WE ASK THE PEOPLE WE HELP NOT TO COME FOR FOOD MORE THAN EVERY OTHER THURSDAY."
+      },
+      {
+            "name": "MUSLIM CENTER, THE",
+            "address": "1605 W. DAVISON AVE, DETROIT, MI 48238",
+            "phone": "313-883-3330",
+            "website": "https://www.themuslimcenter.com/",
+            "requirements": "PHONE CALL RECOMMENDED FOR MORE DETAILS"
+      },
+      {
+            "name": "MY FATHER'S BUSINESS OUTREACH MINISTRIES",
+            "address": "21001 MOROSS RD, DETROIT, MI 48236",
+            "phone": "313-882-3000",
+            "website": "https://gracewired.com/missions/my-fathers-business/",
+            "requirements": "NO NEW CLIENTS. MUST HAVE BEEN A RECEIPIENT IN THE PAST 3 MONTHS"
+      },
+      {
+            "name": "NATIVITY PANTRY",
+            "address": "5900 MCCLELLAN, DETROIT, MI 48213",
+            "phone": "313-922-0033",
+            "website": "https://www.nativitydetroit.org/",
+            "requirements": ""
+      },
+      {
+            "name": "NEW HOPE UNITED METHODIST",
+            "address": "3401 OAKWOOD, MELVINDALE, MI 48122",
+            "phone": "313-383-6577",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "NEW MT. HERMAN FOOD MINISTRY",
+            "address": "3225 SOUTH DEACON STREET, DETROIT, MI 48217",
+            "phone": "313-928-2828",
+            "website": "https://www.foodhelpline.org/resources/new-mount-hermon-missionary-baptist-church",
+            "requirements": ""
+      },
+      {
+            "name": "NEW PROSPECT",
+            "address": "19750 LIVERNOIS, DETROIT, MI 48221",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "NEW PROVIDENCE BAPTIST CHURCH",
+            "address": "18211 PLYMOUTH, DETROIT, MI 48228",
+            "phone": "313-837-0818",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "NEW STEP COMMUNITY DEVELOPMENT",
+            "address": "27628 AVONDALE, INKSTER, MI 48141",
+            "phone": "313-364-0143",
+            "website": "https://www.newstepcdc.org/",
+            "requirements": "APPOINTMENT BY PHONE REQUIRED"
+      },
+      {
+            "name": "NEXUS DETROIT",
+            "address": ", DETROIT , MI 48223",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "NOAH AT CENTRAL",
+            "address": "23 EAST ADAMS AVE, DETROIT, MI 48226",
+            "phone": "313-965-5422",
+            "website": "https://noahatcentral.org/",
+            "requirements": ""
+      },
+      {
+            "name": "NORTHWEST CHURCH OF CHRIST",
+            "address": "5151 OAKMAN, DETROIT, MI 48204",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "NORTHWESTERN COMMUNITY BAPTIST CHURCH",
+            "address": "20225 FENKELL, DETROIT, MI 48223",
+            "phone": "313-533-5664",
+            "website": "",
+            "requirements": "PHONE CALL RECOMMENDED FOR MORE DETAILS"
+      },
+      {
+            "name": "NW BLESSING BOX",
+            "address": "11640 PARKWAY, DETROIT, MI 48239",
+            "phone": "",
+            "website": "https://www.facebook.com/p/NW-Detroit-Blessing-Boxes-61563207223421/",
+            "requirements": ""
+      },
+      {
+            "name": "OPEN DOOR MINISTRIES",
+            "address": "4301 S LILLEY RD, CANTON, MI 48188",
+            "phone": "734-721-2360 or 734-397-1777 X2011",
+            "website": "http://www.opendoorfoodministry.org/",
+            "requirements": "PHONE CALL RECOMMENDED FOR MORE DETAILS"
+      },
+      {
+            "name": "PEOPLE'S CUMMUNITY CHURCH",
+            "address": "8601 WOODWARD AVE, DETROIT, MI 48202",
+            "phone": "313-871-4676",
+            "website": "https://www.historicpcc.org/",
+            "requirements": ""
+      },
+      {
+            "name": "PERFECTING COMMUNITY CARE CENTER",
+            "address": "7100 E. DAVIDSON, DETROIT, MI 48212",
+            "phone": "313-365-2273",
+            "website": "https://www.facebook.com/p/Perfecting-Community-Care-Center-61565362344016/",
+            "requirements": ""
+      },
+      {
+            "name": "PERRY OUTREACH CENTER",
+            "address": "12047 MIAMI, DETROIT, MI 48217",
+            "phone": "313-749-7342",
+            "website": "https://perryoutreach.org",
+            "requirements": ""
+      },
+      {
+            "name": "PILGRIM BAPTIST CHURCH- SURVIVAL",
+            "address": "18474 BINDER, DETROIT, MI 48234",
+            "phone": "313-893-1386",
+            "website": "https://www.pilgrimbaptist-detroit.com/",
+            "requirements": "PHONE CALL RECOMMENDED FOR MORE DETAILS"
+      },
+      {
+            "name": "PRAYER TEMPLE OF LOVE",
+            "address": "12375 WOODWARD AVE, HIGHLAND PARK, MI 48203",
+            "phone": "313-865-6156",
+            "website": "",
+            "requirements": "PHONE CALL RECOMMENDED FOR MORE DETAILS"
+      },
+      {
+            "name": "PROJECT HEALTHY COMMUNITY - MEYERS",
+            "address": "18100 MEYERS RD, DETROIT, MI 48235",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "PURE WORD MISSIONARY BAPTIST",
+            "address": "20011 GRAND RIVER, DETROIT, MI 48219",
+            "phone": "313-862-5900",
+            "website": "https://pureword911.com/",
+            "requirements": ""
+      },
+      {
+            "name": "REDEEMED CHRISTIAN FELLOWSHIP",
+            "address": "18641 WYOMING, DETROIT, MI 48221",
+            "phone": "313-208-2537",
+            "website": "",
+            "requirements": "PHONE CALL RECOMMENDED FOR MORE DETAILS"
+      },
+      {
+            "name": "REDFORD INTERFAITH RELIEF",
+            "address": "18499 BEECH DALY, REDFORD, MI 48240",
+            "phone": "313-563-4457 X500",
+            "website": "https://www.redfordinterfaithrelief.org/",
+            "requirements": "APPOINTMENT BY PHONE REQUIRED"
+      },
+      {
+            "name": "RESURRECTION UNITED METHODIST",
+            "address": "8150 SCHAEFER, DETROIT, MI 48228",
+            "phone": "313-722-4772",
+            "website": "https://www.facebook.com/groups/1121933855116889/",
+            "requirements": ""
+      },
+      {
+            "name": "REVIVAL TABERNACLE",
+            "address": "16455 WOODWARD AVENUE, HIGHLAND PARK, MI 48203",
+            "phone": "313-869-0140",
+            "website": "https://www.revivaltab.org/",
+            "requirements": "SERVES ZIP CODES 48141, 48164, 48174, 48184, 48185, AND 48186. PROOF OF RESIDENCE OR PHOTO ID REQUIRED"
+      },
+      {
+            "name": "RIVER BIBLE CHURCH",
+            "address": "31340 OLMSTED RD, ROCKWOOD, MI 48173",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "RIVER ROUGE HIGH SCHOOL",
+            "address": "1460 COOLIDGE HWY, RIVER ROUGE, MI 48218",
+            "phone": "734-282-0930",
+            "website": "",
+            "requirements": "APPOINTMENT BY PHONE REQUIRED"
+      },
+      {
+            "name": "RIVER ROUGE POLICE STATION",
+            "address": "10600 W. JEFFERSON, RIVER ROUGE, MI 48218",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "ROCKWOOD FOOD PANTRY (FIRST CONG CHURCH)",
+            "address": "22600 MATHER ST, FLAT ROCK, MI 48173",
+            "phone": "734-379-3711",
+            "website": "https://sites.google.com/view/gibraltarfoodpantry/home?authuser=0",
+            "requirements": ""
+      },
+      {
+            "name": "RUTH ELLIS CENTER",
+            "address": "95 VICTOR, HIGHLAND PARK, MI 48203",
+            "phone": "",
+            "website": "https://www.ruthelliscenter.org/",
+            "requirements": ""
+      },
+      {
+            "name": "SAINT ALOYSIUS COMMUNITY",
+            "address": "1234 WASHINGTON BLVD, DETROIT, MI 48226",
+            "phone": "313-237-5810",
+            "website": "https://www.staloysiusdetroit.com/",
+            "requirements": ""
+      },
+      {
+            "name": "SAINT CHRISTINE CHRISTIAN SERVICES",
+            "address": "22303 FENKELL, DETROIT, MI 48223",
+            "phone": "313-543-1527",
+            "website": "https://sccsdetroit.org/food-pantry",
+            "requirements": "SERVE ZIP CODES 48223 AND 48219.. ID WITH ZIP CODE WILL BE REQUIRED."
+      },
+      {
+            "name": "SAINT CHRISTINE CHRISTIAN SERVICES (SCCS)",
+            "address": "15317 DACOSTA, DETROIT , MI 48223",
+            "phone": "313-543-1527",
+            "website": "https://sccsdetroit.org/",
+            "requirements": ""
+      },
+      {
+            "name": "SAINT CLEMENT'S FOOD PANTRY",
+            "address": "14057 9 MILE RD, WARREN, MI 48089",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "SAINT CYPRIAN CATHOLIC CHURCH",
+            "address": "13249 PENNSYLVANI RD, RIVERVIEW, MI 48193",
+            "phone": "734-283-1366",
+            "website": "https://stcyprian.com/food-pantry",
+            "requirements": "APPOINTMENT BY PHONE REQUIRED"
+      },
+      {
+            "name": "SAINT JAMES EPISCOPAL CHURCH",
+            "address": "25150 EAST RIVER RD, GROSSE ILE, MI 48138",
+            "phone": "",
+            "website": "https://www.saintjamesgi.net/Saint_James_Episcopal/HOME.html",
+            "requirements": ""
+      },
+      {
+            "name": "SAINT JOHN COMMUNITY CENTER",
+            "address": "14320 KERCHEVAL STREET, DETROIT, MI 48215",
+            "phone": "",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "SAINT JUDE",
+            "address": "15879 E. SEVEN MILE RD., DETROIT, MI 48205",
+            "phone": "313-527-0380",
+            "website": "https://stjudedetroit.org/",
+            "requirements": "AGENCY WILL ONLY SERVE THE FIRST 30 FAMILIES."
+      },
+      {
+            "name": "SAINT LUKE'S FOOD PROGRAM",
+            "address": "8534 TIREMAN, DETROIT, MI 48204",
+            "phone": "313-935-6161",
+            "website": "",
+            "requirements": ""
+      },
+      {
+            "name": "SAINT MARY, CAUSE OF OUR JOY",
+            "address": "8200 N. WAYNE ROAD, WESTLAND, MI 48185",
+            "phone": "",
+            "website": "https://stmarycooj.org/forgotten-harvest/#:~:text=We%20will%20be%20hosting%20a,To%20volunteer%2C%20CLICK%20HERE",
+            "requirements": ""
+      },
+      {
+            "name": "SAINT MARY'S COMMUNITY OUTREACH",
+            "address": "34530 W. MICHIGAN AVENUE, WAYNE, MI 48141",
+            "phone": "734-326-2234",
+            "website": "https://stmarywayne.org/st-mary-community-outreach-center",
+            "requirements": "PHONE CALL RECOMMENDED FOR MORE DETAILS"
+      },
+      {
+            "name": "SAINT MICHAEL & ALL ANGELS EPISCOPAL CHURCH",
+            "address": "1325 CHAMPAIGN RD, LINCOLN PARK, MI 48146",
+            "phone": "",
+            "website": "https://www.stmichaelslp.com/",
+            "requirements": ""
+      },
+      {
+            "name": "SAINT PATRICK FOOD PANTRY",
+            "address": "58 PARSONS ST., DETROIT, MI 48201",
+            "phone": "313-833-0857",
+            "website": "https://stpatsrctr.org/",
+            "requirements": "MUST LIVE IN ZIP CODES 48201 OR 48202"
+      },
+      {
+            "name": "SAINT PAUL UNITED METHODIST",
+            "address": "8701 W 8 MILE RD, DETROIT, MI 48221",
+            "phone": "313-342-4656",
+            "website": "https://www.umc.org/find-a-church/church?id=001Um00000PFLR8IAP",
+            "requirements": "PHONE CALL RECOMMENDED FOR MORE DETAILS"
+      },
+      {
+            "name": "SAINT PHILIP LUTHERAN CHURCH",
+            "address": "1790 FORT STREET, TRENTON, MI 48183",
+            "phone": "734-676-7141",
+            "website": "",
+            "requirements": "REQUIRE A FORM OF ID"
+      },
+      {
+            "name": "SAINT STEPHENS EPISCOPAL CHURCH",
+            "address": "2801 FIRST ST, WYANDOTTE, MI 48192",
+            "phone": "",
+            "website": "https://sites.google.com/site/ststephenswyandotte/home",
+            "requirements": ""
+      },
+      {
+            "name": "SAINT THOMAS LUTHERAN CHURCH",
+            "address": "9393 CHURCH AVE, GROSSE ILE, MI 48138",
+            "phone": "",
+            "website": "https://www.stthomasgi.com/",
+            "requirements": ""
+      }
+];
+
+    const WAYNE_CITY_COORDS = {
+      "allen park": [42.2575, -83.2110],
+      "belleville": [42.2048, -83.4852],
+      "brownstown": [42.1473, -83.2577],
+      "canton": [42.3086, -83.4822],
+      "dearborn": [42.3223, -83.1763],
+      "dearborn heights": [42.3369, -83.2733],
+      "detroit": [42.3314, -83.0458],
+      "ecorse": [42.2445, -83.1458],
+      "flat rock": [42.0964, -83.2919],
+      "gibraltar": [42.0950, -83.1896],
+      "hamtramck": [42.3928, -83.0496],
+      "highland park": [42.4056, -83.0969],
+      "inkster": [42.2942, -83.3099],
+      "lincoln park": [42.2506, -83.1785],
+      "livonia": [42.3684, -83.3527],
+      "melvindale": [42.2825, -83.1752],
+      "new boston": [42.1620, -83.4038],
+      "oak park": [42.4595, -83.1827],
+      "redford": [42.3834, -83.2966],
+      "river rouge": [42.2734, -83.1344],
+      "romulus": [42.2223, -83.3966],
+      "southgate": [42.2139, -83.1938],
+      "taylor": [42.2409, -83.2697],
+      "trenton": [42.1395, -83.1783],
+      "wayne": [42.2814, -83.3863],
+      "westland": [42.3242, -83.4002],
+      "woodhaven": [42.1389, -83.2416],
+      "wyandotte": [42.2142, -83.1499],
+      "grosse ile": [42.1292, -83.1444]
+    };
+
+    const WAYNE_ZIP_COORDS = {
+      "48101": [42.2575, -83.2110], "48111": [42.2048, -83.4852], "48122": [42.2825, -83.1752],
+      "48124": [42.2988, -83.2466], "48125": [42.2781, -83.2610], "48126": [42.3223, -83.1763],
+      "48127": [42.3369, -83.2733], "48134": [42.1389, -83.2416], "48135": [42.3256, -83.3310], "48138": [42.1292, -83.1444],
+      "48141": [42.2942, -83.3099], "48146": [42.2506, -83.1785], "48150": [42.3684, -83.3527],
+      "48164": [42.1620, -83.4038], "48173": [42.0950, -83.1896], "48174": [42.2223, -83.3966],
+      "48180": [42.2409, -83.2697], "48183": [42.1395, -83.1783], "48184": [42.2814, -83.3863],
+      "48185": [42.3242, -83.4002], "48188": [42.3086, -83.4822], "48192": [42.2142, -83.1499], "48195": [42.2139, -83.1938],
+      "48201": [42.3487, -83.0602], "48202": [42.3742, -83.0774], "48203": [42.4056, -83.0969],
+      "48204": [42.3661, -83.1410], "48205": [42.4306, -82.9860], "48206": [42.3747, -83.1075],
+      "48207": [42.3474, -83.0177], "48208": [42.3540, -83.0909], "48209": [42.3070, -83.1224],
+      "48210": [42.3370, -83.1311], "48211": [42.3821, -83.0477], "48212": [42.4103, -83.0585],
+      "48213": [42.4048, -82.9860], "48214": [42.3702, -82.9992], "48215": [42.3741, -82.9505],
+      "48216": [42.3232, -83.0769], "48217": [42.2798, -83.1569], "48219": [42.4255, -83.2507],
+      "48221": [42.4270, -83.1450], "48223": [42.4028, -83.2460], "48224": [42.4097, -82.9339],
+      "48227": [42.3841, -83.1941], "48228": [42.3541, -83.2224], "48229": [42.2445, -83.1458],
+      "48234": [42.4352, -83.0433], "48235": [42.4267, -83.1978], "48238": [42.3973, -83.1393],
+      "48239": [42.3834, -83.2966]
+    };
+
+    function approximateCoordsForAddress(address) {
+      const zip = address.match(/MI\s+(\d{5})/i)?.[1];
+      if (zip && WAYNE_ZIP_COORDS[zip]) return WAYNE_ZIP_COORDS[zip];
+      const city = address.match(/,\s*([^,]+),\s*MI/i)?.[1]?.trim().toLowerCase().replace(/\s+/g, " ");
+      return WAYNE_CITY_COORDS[city] || [42.3314, -83.0458];
+    }
+
+    function buildPowerBiResources() {
+      const existingAddresses = new Set(resources.map(item => item.address.toLowerCase().replace(/[^a-z0-9]+/g, "")));
+      return POWERBI_ROWS.map((row, index) => {
+        const [lat, lng] = approximateCoordsForAddress(row.address);
+        const requirement = row.requirements || "Call or check source before visiting";
+        return {
+          id: `wayne-powerbi-${index}-${row.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`,
+          name: row.name,
+          type: "pantry",
+          category: "Wayne County food resource",
+          schedule: requirement,
+          address: row.address,
+          neighborhood: row.address.match(/,\s*([^,]+),\s*MI/i)?.[1]?.trim() || "Wayne County",
+          phone: row.phone || "",
+          source: "Wayne County Food Finder / Power BI",
+          sourceUrl: row.website || POWERBI_REPORT_URL,
+          updated: RESOURCE_LAST_REVIEWED,
+          lat,
+          lng,
+          approximate: true,
+          tags: ["Wayne County", "Power BI", row.requirements ? "Requirements listed" : "Call ahead"]
+        };
+      }).filter(item => !existingAddresses.has(item.address.toLowerCase().replace(/[^a-z0-9]+/g, "")));
+    }
+
+    const WELLNESS_MAP_RESOURCES = [
+      ["Belle Isle Park", "Belle Isle, Detroit, MI 48207", 42.3400, -82.9740, "Regional park", "Playgrounds, water amenities, sports fields, picnic areas, walking paths, tennis, golf/putt putt, restrooms, fitness amenities."],
+      ["Southwest Greenway - Bagley Trailhead", "Bagley St & 16th St, Detroit, MI 48216", 42.3228, -83.0815, "Trailhead", "Walking, running, biking, neighborhood greenway access."],
+      ["Dequindre Cut Greenway Trailhead", "Dequindre Cut Greenway Trailhead, Detroit, MI 48207", 42.3359, -83.0294, "Trailhead", "Walking, running, biking, public art, Riverfront connection."],
+      ["Gabriel Richard Park", "7130 E Jefferson Ave, Detroit, MI 48207", 42.3485, -82.9821, "Park", "Riverfront park with walking paths, fishing access, picnic areas, and outdoor wellness space."],
+      ["Alfred Brush Ford Park", "Alfred Brush Ford Park, Detroit, MI 48215", 42.3671, -82.9447, "Park", "Detroit riverfront park with walking paths, open space, and neighborhood recreation access."],
+      ["O'Hair Park", "O'Hair Park, Detroit, MI 48219", 42.4337, -83.2404, "Regional park", "Playground, sports fields, basketball, picnic areas, walking path, restrooms, fitness amenities."],
+      ["Rouge Park", "Rouge Park, Detroit, MI 48228", 42.3543, -83.2598, "Regional park", "Playground, football, soccer, softball/baseball, basketball, picnic areas, walking paths, tennis, golf, restrooms, fitness amenities."],
+      ["Eliza Howell Park", "Eliza Howell Park, Detroit, MI 48219", 42.3987, -83.2638, "Regional park", "Playground, sports fields, picnic areas, walking path, tennis."],
+      ["Patton Park", "Patton Park, Detroit, MI 48209", 42.3020, -83.1285, "Regional park", "Playground, restrooms, soccer, softball/baseball, picnic areas, walking path, fitness amenities."],
+      ["Historic Fort Wayne", "Historic Fort Wayne, 6325 W Jefferson Ave, Detroit, MI 48209", 42.2982, -83.0972, "Regional park", "Historic site, limited hours, sports field, outdoor walking space."],
+      ["Farwell Park", "Farwell Park, Detroit, MI 48205", 42.4302, -83.0014, "Regional park", "Playground, restrooms, fitness amenities, football, soccer, softball/baseball, basketball, picnic areas, walking path."],
+      ["Palmer Park", "Palmer Park, Detroit, MI 48203", 42.4255, -83.1143, "Regional park", "Water amenities, sports fields, basketball, picnic areas, walking paths, tennis, playground, restrooms, fitness amenities."],
+      ["Jayne-Lasky Park", "Jayne-Lasky Park, Detroit, MI 48205", 42.4200, -82.9824, "Regional park", "Playgrounds, restrooms, golf/putt putt, tennis, soccer, softball/baseball, basketball, picnic areas, walking paths."],
+      ["Balduck Park", "Balduck Park, Detroit, MI 48224", 42.4081, -82.9376, "Regional park", "Dog park, playground, restrooms, soccer, softball/baseball, basketball, picnic areas, walking paths."],
+      ["Chandler Park", "Chandler Park, Detroit, MI 48213", 42.3921, -82.9470, "Regional park", "Water amenities, football, soccer, softball/baseball, basketball, picnic areas, walking paths, fitness amenities, tennis."],
+      ["Maheras-Gentry Park", "Maheras-Gentry Park, Detroit, MI 48215", 42.3713, -82.9492, "Regional park", "Playgrounds, restrooms, sports fields, softball/baseball, picnic areas, walking path, fitness amenities."],
+      ["Adams Butzel Park and New Community Center", "10500 Lyndon St, Detroit, MI 48238", 42.3987, -83.1618, "Recreation center", "City of Detroit recreation center; programs and classes."],
+      ["A. B. Ford Recreation Facility", "100 Lenox St, Detroit, MI 48215", 42.3673, -82.9405, "Recreation center", "City of Detroit recreation facility; neighborhood wellness programs."],
+      ["Brennan Family Center", "Brennan Pool and Family Center, Detroit, MI 48205", 42.4333, -82.9769, "Recreation center", "City of Detroit family center; recreation programs."],
+      ["Butzel Center", "7737 Kercheval Ave, Detroit, MI 48214", 42.3590, -82.9981, "Recreation center", "City of Detroit recreation center; programs and classes."],
+      ["Clemente Fieldhouse", "2631 Bagley St, Detroit, MI 48216", 42.3193, -83.0831, "Recreation center", "City of Detroit fieldhouse; indoor recreation."],
+      ["Chandler Park Community Center", "Chandler Park Community Center, Detroit, MI 48213", 42.3914, -82.9460, "Recreation center", "City of Detroit community center in Chandler Park."],
+      ["Coleman A. Young Community Center", "2751 Robert Bradby Dr, Detroit, MI 48207", 42.3478, -83.0268, "Recreation center", "City of Detroit community center; recreation programs."],
+      ["Crowell Recreation Center", "16630 Lahser Rd, Detroit, MI 48219", 42.4127, -83.2582, "Recreation center", "City of Detroit recreation center; programs and classes."],
+      ["Farwell Community Center", "2711 E Outer Dr, Detroit, MI 48234", 42.4314, -83.0045, "Recreation center", "City of Detroit community center."],
+      ["Heilmann Center", "19601 Crusade St, Detroit, MI 48205", 42.4412, -82.9739, "Recreation center", "City of Detroit recreation center."],
+      ["Joseph Walker Williams Recreation Center", "8431 Rosa Parks Blvd, Detroit, MI 48206", 42.3741, -83.1031, "Recreation center", "City of Detroit recreation center; programs and classes."],
+      ["Kemeny Recreation Center", "2260 S Fort St, Detroit, MI 48217", 42.2779, -83.1387, "Recreation center", "City of Detroit recreation center; youth and family programs."],
+      ["Lasky Activities Center", "13200 Fenelon St, Detroit, MI 48212", 42.4085, -83.0581, "Recreation center", "City of Detroit activities center."],
+      ["Northwest Community Center", "18100 Meyers Rd, Detroit, MI 48235", 42.4235, -83.1717, "Recreation center", "City of Detroit community center; programs and classes."],
+      ["Patton Recreation Center", "2301 Woodmere St, Detroit, MI 48209", 42.3063, -83.1224, "Recreation center", "City of Detroit recreation center."],
+      ["Tindal Community Center", "10301 W 7 Mile Rd, Detroit, MI 48221", 42.4288, -83.1630, "Recreation center", "City of Detroit community center."],
+      ["Helen Moore", "Helen Moore, Detroit, MI", 42.4012, -83.1120, "Recreation center", "City of Detroit recreation site."]
+    ];
+
+    function buildWellnessMapResources() {
+      const existingKeys = new Set(resources.map(item => `${item.name}|${item.address}`.toLowerCase().replace(/[^a-z0-9]+/g, "")));
+      return WELLNESS_MAP_RESOURCES.map((item, index) => ({
+        id: `wellness-map-${index}-${item[0].toLowerCase().replace(/[^a-z0-9]+/g, "-")}`,
+        name: item[0],
+        type: "wellness",
+        category: item[4],
+        schedule: "Check current hours before visiting",
+        address: item[1],
+        neighborhood: "Detroit",
+        phone: "(313) 224-1100",
+        source: "City of Detroit Parks & Recreation",
+        sourceUrl: "https://detroitmi.gov/departments/detroit-parks-recreation/recreation-centers",
+        updated: RESOURCE_LAST_REVIEWED,
+        lat: item[2],
+        lng: item[3],
+        tags: ["Wellness", item[4], item[5]]
+      })).filter(item => !existingKeys.has(`${item.name}|${item.address}`.toLowerCase().replace(/[^a-z0-9]+/g, "")));
+    }
+
+    resources = resources.concat(buildWellnessMapResources(), buildPowerBiResources());
+
+    const videos = {
+      Michigan: [
+        ["Michigan Food Assistance Basics", "How to find benefits, pantries, and school meal support."],
+        ["Detroit Youth Wellness Resources", "Movement, recreation, and mental wellness programs."],
+        ["How to Use the Finder", "A walkthrough for families and school staff."]
+      ],
+      National: [
+        ["Finding Food Support", "Questions to ask and documents that may help."],
+        ["Building a Weekly Goal", "Pick a habit that fits your real week."],
+        ["Starting a School Wellness Night", "A simple planning roadmap for educators."]
+      ]
+    };
+
+    const resultsList = document.querySelector("#resultsList");
+    const searchInput = document.querySelector("#resourceSearch");
+    const chips = document.querySelectorAll(".filter-chip");
+    const updateStatus = document.querySelector("#updateStatus");
+    const sourceBadge = document.querySelector("#sourceBadge");
+    let activeFilter = "all";
+    let map;
+    let markersLayer;
+    let visibleResources = [];
+    let userLocation = null;
+    let proximityMode = false;
+
+    function showToast(message) {
+      const toast = document.querySelector("#toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.setTimeout(() => toast.classList.remove("show"), 2600);
+    }
+
+    function mapsUrl(item) {
+      return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.address)}`;
+    }
+
+    function distanceMiles(a, b) {
+      const earthRadiusMiles = 3958.8;
+      const toRad = value => value * Math.PI / 180;
+      const dLat = toRad(b.lat - a.lat);
+      const dLng = toRad(b.lng - a.lng);
+      const lat1 = toRad(a.lat);
+      const lat2 = toRad(b.lat);
+      const h = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+      return earthRadiusMiles * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h));
+    }
+
+    function localCoordsFromQuery(query) {
+      const normalized = query.toLowerCase();
+      const zip = normalized.match(/\b\d{5}\b/)?.[0];
+      if (zip && WAYNE_ZIP_COORDS[zip]) return { lat: WAYNE_ZIP_COORDS[zip][0], lng: WAYNE_ZIP_COORDS[zip][1], label: zip };
+      const city = Object.keys(WAYNE_CITY_COORDS).find(name => normalized.includes(name));
+      if (city) return { lat: WAYNE_CITY_COORDS[city][0], lng: WAYNE_CITY_COORDS[city][1], label: city };
+      return null;
+    }
+
+    async function geocodeAddress(query) {
+      const local = localCoordsFromQuery(query);
+      if (local) return local;
+
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=us&q=${encodeURIComponent(query + " Michigan")}`, {
+        headers: { "Accept": "application/json" }
+      });
+      if (!response.ok) throw new Error("Address lookup failed");
+      const results = await response.json();
+      if (!results.length) throw new Error("No address match found");
+      return {
+        lat: Number(results[0].lat),
+        lng: Number(results[0].lon),
+        label: results[0].display_name.split(",").slice(0, 3).join(",")
+      };
+    }
+
+    function markerType(item) {
+      if (item.type === "youth") return "youth";
+      if (item.type === "senior") return "senior";
+      if (item.type === "wellness") return "wellness";
+      return "food";
+    }
+
+    function markerIcon(item) {
+      const label = item.type === "wellness" ? "↗" : item.type === "senior" ? "60" : item.type === "youth" ? "Y" : "+";
+      return L.divIcon({
+        className: "",
+        html: `<span class="map-marker ${markerType(item)}">${label}</span>`,
+        iconSize: [34, 34],
+        iconAnchor: [17, 17],
+        popupAnchor: [0, -14]
+      });
+    }
+
+    function initMap() {
+      if (!window.L) {
+        document.querySelector("#resourceMap").innerHTML = "<p class='meta' style='padding:1rem'>Map library could not load. Resource cards and Google Maps links still work.</p>";
+        return;
+      }
+
+      map = L.map("resourceMap", { scrollWheelZoom: false }).setView([42.365, -83.08], 11);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "&copy; OpenStreetMap contributors"
+      }).addTo(map);
+      markersLayer = L.layerGroup().addTo(map);
+    }
+
+    function popupHtml(item) {
+      return `
+        <h3>${item.name}</h3>
+        <p class="meta"><strong>${item.category}</strong><br>${item.schedule}<br>${item.address}</p>
+        ${item.approximate ? `<p class="meta">Map pin is approximate by city/ZIP; Navigate opens the exact address.</p>` : ""}
+        <div class="result-tags">${item.tags.slice(0, 3).map(tag => `<span class="tag">${tag}</span>`).join("")}</div>
+        <div class="result-actions" style="margin-top:.7rem">
+          <a class="tiny-btn" href="${mapsUrl(item)}" target="_blank" rel="noopener">Navigate</a>
+          <a class="link-btn" href="${item.sourceUrl}" target="_blank" rel="noopener">Source</a>
+        </div>
+      `;
+    }
+
+    function updateMap(items) {
+      if (!map || !markersLayer) return;
+      markersLayer.clearLayers();
+
+      const markers = items
+        .filter(item => Number.isFinite(item.lat) && Number.isFinite(item.lng))
+        .map(item => {
+          const marker = L.marker([item.lat, item.lng], { icon: markerIcon(item), title: item.name });
+          marker.bindPopup(popupHtml(item));
+          marker.on("click", () => highlightCard(item.id));
+          marker.addTo(markersLayer);
+          return marker;
+        });
+
+      if (userLocation) {
+        const marker = L.circleMarker([userLocation.lat, userLocation.lng], {
+          radius: 10,
+          color: "#25243d",
+          fillColor: "#f0b84b",
+          fillOpacity: 0.95,
+          weight: 3
+        }).bindPopup(`<strong>Your search area</strong><br>${userLocation.label}`);
+        marker.addTo(markersLayer);
+        markers.push(marker);
+      }
+
+      if (markers.length) {
+        const group = L.featureGroup(markers);
+        map.fitBounds(group.getBounds().pad(0.16), { maxZoom: 13 });
+      }
+    }
+
+    function highlightCard(id) {
+      const card = document.querySelector(`[data-resource-id="${id}"]`);
+      if (!card) return;
+      card.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      card.style.boxShadow = "0 0 0 3px rgba(8, 123, 168, 0.18)";
+      window.setTimeout(() => card.style.boxShadow = "", 1200);
+    }
+
+    function renderResults() {
+      const query = searchInput.value.trim().toLowerCase();
+      visibleResources = resources.filter(item => {
+        const matchesFilter = activeFilter === "all" || item.type === activeFilter;
+        const haystack = [
+          item.name,
+          item.category,
+          item.schedule,
+          item.address,
+          item.neighborhood,
+          item.phone,
+          item.source,
+          item.tags.join(" ")
+        ].join(" ").toLowerCase();
+        const matchesQuery = proximityMode || !query || haystack.includes(query) || (query.includes("detroit") && item.address.toLowerCase().includes("detroit"));
+        return matchesFilter && matchesQuery;
+      });
+
+      visibleResources = visibleResources.map(item => ({
+        ...item,
+        distance: userLocation && Number.isFinite(item.lat) && Number.isFinite(item.lng)
+          ? distanceMiles(userLocation, { lat: item.lat, lng: item.lng })
+          : null
+      }));
+
+      if (userLocation) {
+        visibleResources.sort((a, b) => (a.distance ?? Infinity) - (b.distance ?? Infinity));
+      }
+
+      updateStatus.textContent = userLocation
+        ? `${visibleResources.length} resources shown nearest to ${userLocation.label} · reviewed ${RESOURCE_LAST_REVIEWED}`
+        : `${visibleResources.length} resources shown · reviewed ${RESOURCE_LAST_REVIEWED}`;
+      updateMap(visibleResources);
+
+      resultsList.innerHTML = visibleResources.map(item => `
+        <article class="result-card" data-resource-id="${item.id}">
+          <div>
+            <h3>${item.name}</h3>
+            ${Number.isFinite(item.distance) ? `<p class="meta"><strong>${item.distance.toFixed(1)} miles away</strong></p>` : ""}
+            <p class="meta"><strong>${item.category}</strong> · ${item.schedule}</p>
+            <p class="meta">${item.address}${item.phone ? ` · ${item.phone}` : ""}</p>
+            ${item.approximate ? `<p class="meta">Approximate map pin by city/ZIP. Navigation uses the exact address.</p>` : ""}
+            <p class="meta">Source: <a class="link-btn" href="${item.sourceUrl}" target="_blank" rel="noopener">${item.source}</a></p>
+            <div class="result-tags">${item.tags.map(tag => `<span class="tag">${tag}</span>`).join("")}</div>
+          </div>
+          <div class="result-actions">
+            <button class="tiny-btn" type="button" data-focus="${item.id}">Map</button>
+            <a class="tiny-btn" href="${mapsUrl(item)}" target="_blank" rel="noopener">Navigate</a>
+          </div>
+        </article>
+      `).join("") || `<p class="meta">No matches yet. Try another neighborhood, resource type, day, or choose All.</p>`;
+    }
+
+    chips.forEach(chip => {
+      chip.addEventListener("click", () => {
+        chips.forEach(button => button.classList.remove("active"));
+        chip.classList.add("active");
+        activeFilter = chip.dataset.filter;
+        renderResults();
+      });
+    });
+
+    searchInput.addEventListener("input", () => {
+      proximityMode = false;
+      userLocation = null;
+      renderResults();
+    });
+
+    async function searchNearAddress() {
+      const query = searchInput.value.trim();
+      if (!query) {
+        userLocation = { lat: 42.3314, lng: -83.0458, label: "Detroit" };
+        proximityMode = true;
+        renderResults();
+        showToast("Showing resources nearest to Detroit.");
+        return;
+      }
+
+      try {
+        updateStatus.textContent = "Finding that address...";
+        userLocation = await geocodeAddress(query);
+        proximityMode = true;
+        renderResults();
+        showToast(`Sorted by distance from ${userLocation.label}.`);
+      } catch (error) {
+        proximityMode = false;
+        userLocation = null;
+        renderResults();
+        showToast("Could not locate that address. Try a ZIP code or Detroit neighborhood.");
+      }
+    }
+
+    document.querySelector("#useDetroitBtn").addEventListener("click", searchNearAddress);
+    searchInput.addEventListener("keydown", event => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        searchNearAddress();
+      }
+    });
+
+    resultsList.addEventListener("click", event => {
+      const button = event.target.closest("button[data-focus]");
+      if (!button) return;
+      const item = resources.find(resource => resource.id === button.dataset.focus);
+      if (!item || !map) return;
+      map.setView([item.lat, item.lng], 14);
+      markersLayer.eachLayer(marker => {
+        const pos = marker.getLatLng();
+        if (Math.abs(pos.lat - item.lat) < 0.0001 && Math.abs(pos.lng - item.lng) < 0.0001) {
+          marker.openPopup();
+        }
+      });
+    });
+
+    async function tryDailyResourceRefresh(force = false) {
+      const todayKey = new Date().toISOString().slice(0, 10);
+      const cached = localStorage.getItem("r4ym_resource_cache");
+      const cachedDate = localStorage.getItem("r4ym_resource_cache_date");
+
+      if (!force && cached && cachedDate === todayKey) {
+        try {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length) {
+            resources = parsed.concat(resources.filter(item => !parsed.some(next => next.id === item.id)));
+            sourceBadge.textContent = "Updated today";
+            renderResults();
+            return;
+          }
+        } catch (error) {
+          localStorage.removeItem("r4ym_resource_cache");
+        }
+      }
+
+      if (!RESOURCE_FEED_URL) {
+        updateStatus.textContent = `${visibleResources.length || resources.length} resources shown · add RUN4YMIND_RESOURCE_FEED_URL for automatic daily updates`;
+        return;
+      }
+
+      try {
+        updateStatus.textContent = "Checking linked resource feed...";
+        const response = await fetch(RESOURCE_FEED_URL, { cache: "no-store" });
+        if (!response.ok) throw new Error("Feed unavailable");
+        const liveItems = await response.json();
+        if (!Array.isArray(liveItems)) throw new Error("Feed must return an array");
+        resources = liveItems.concat(resources.filter(item => !liveItems.some(next => next.id === item.id)));
+        localStorage.setItem("r4ym_resource_cache", JSON.stringify(liveItems));
+        localStorage.setItem("r4ym_resource_cache_date", todayKey);
+        sourceBadge.textContent = "Updated today";
+        renderResults();
+        showToast("Resource feed updated.");
+      } catch (error) {
+        updateStatus.textContent = "Daily update feed unavailable. Showing reviewed fallback resources.";
+        showToast("Could not refresh live feed; showing reviewed local resources.");
+      }
+    }
+
+    document.querySelector("#refreshResources").addEventListener("click", () => tryDailyResourceRefresh(true));
+
+    function renderVideos(state) {
+      document.querySelector("#videoGrid").innerHTML = videos[state].map((video, index) => `
+        <article class="video-card">
+          <div class="video-thumb" aria-label="Video thumbnail">${index + 1} ▶</div>
+          <div>
+            <h3>${video[0]}</h3>
+            <p>${video[1]}</p>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    document.querySelectorAll(".tab-btn").forEach(tab => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll(".tab-btn").forEach(button => button.classList.remove("active"));
+        tab.classList.add("active");
+        renderVideos(tab.dataset.state);
+      });
+    });
+
+    const checks = document.querySelectorAll("#habitChecks input");
+    const HABIT_STORAGE_KEY = "run4yourmind_weekly_habit_progress";
+
+    function celebrateGoal() {
+      const colors = ["#f6a9ba", "#e9575f", "#087ba8", "#f0b84b", "#25243d"];
+      for (let i = 0; i < 90; i++) {
+        const piece = document.createElement("span");
+        piece.className = "confetti-piece";
+        piece.style.left = `${Math.random() * 100}vw`;
+        piece.style.background = colors[i % colors.length];
+        piece.style.setProperty("--drift", `${(Math.random() - 0.5) * 220}px`);
+        piece.style.animationDelay = `${Math.random() * 0.35}s`;
+        document.body.appendChild(piece);
+        window.setTimeout(() => piece.remove(), 2400);
+      }
+      showToast("Weekly goal complete. Nice work.");
+    }
+
+    function saveGoalProgress() {
+      localStorage.setItem(HABIT_STORAGE_KEY, JSON.stringify([...checks].map(check => check.checked)));
+    }
+
+    function loadGoalProgress() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(HABIT_STORAGE_KEY));
+        if (Array.isArray(saved) && saved.length === checks.length) {
+          checks.forEach((check, index) => check.checked = Boolean(saved[index]));
+        }
+      } catch (error) {
+        localStorage.removeItem(HABIT_STORAGE_KEY);
+      }
+    }
+
+    function updateGoal(options = {}) {
+      const wasComplete = document.querySelector("#goalText").dataset.complete === "true";
+      const complete = [...checks].filter(check => check.checked).length;
+      const goalText = document.querySelector("#goalText");
+      goalText.textContent = `${complete} of 7 days complete`;
+      goalText.dataset.complete = complete === 7 ? "true" : "false";
+      document.querySelector("#goalMeter").style.width = `${Math.round((complete / 7) * 100)}%`;
+      saveGoalProgress();
+      if (!options.silent && complete === 7 && !wasComplete) {
+        celebrateGoal();
+      }
+    }
+
+    checks.forEach(check => check.addEventListener("change", updateGoal));
+    document.querySelector("#resetGoal").addEventListener("click", () => {
+      checks.forEach(check => check.checked = false);
+      updateGoal();
+      localStorage.removeItem(HABIT_STORAGE_KEY);
+      showToast("Weekly goal tracker reset.");
+    });
+
+    document.querySelector("#matchBtn").addEventListener("click", () => {
+      const need = document.querySelector("#needSelect").value;
+      const area = document.querySelector("#areaSelect").value;
+      document.querySelectorAll(".resource-card").forEach(card => {
+        const needMatch = need === "all" || card.dataset.need === need;
+        const areaMatch = area === "all" || card.dataset.area === area || card.dataset.area === "all";
+        card.style.display = needMatch && areaMatch ? "grid" : "none";
+      });
+      showToast("Resource cards filtered.");
+    });
+
+    document.querySelector("#contactForm").addEventListener("submit", event => {
+      showToast("Sending message to run4yourmindmi@gmail.com...");
+    });
+
+    initMap();
+    renderResults();
+    tryDailyResourceRefresh();
+    renderVideos("Michigan");
+    loadGoalProgress();
+    updateGoal({ silent: true });
+  </script>
+</body>
+</html>
