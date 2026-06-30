@@ -3535,7 +3535,7 @@
 
       try {
         updateStatus.textContent = "Checking linked resource feed...";
-        const response = await fetch(RESOURCE_FEED_URL, { cache: "no-store" });
+        const response = await fetch(run4yourmind-resource-worker.js, { cache: "no-store" });
         if (!response.ok) throw new Error("Feed unavailable");
         const liveItems = await response.json();
         if (!Array.isArray(liveItems)) throw new Error("Feed must return an array");
